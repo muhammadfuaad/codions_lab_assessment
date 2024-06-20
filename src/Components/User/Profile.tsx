@@ -31,7 +31,7 @@ const Profile: React.FC = () => {
         setUserData(response.data.data);
       })
       .catch(error => {
-        setError('There was an error fetching the user data');
+        setError('Please Login');
         setLoading(false);
         console.log("error:", error);
       });
@@ -69,10 +69,30 @@ const Profile: React.FC = () => {
   ];
 
   const dataSource = userData ? [userData] : [];
+  
+  const handleLogOut = () => {
+    const savedToken = localStorage.getItem("token");
+    console.log('savedToken:', savedToken);
+
+    const options = {
+      headers: {
+        Authorization: `Bearer ${savedToken}`,
+      },
+    };
+    axios.post('https://task-manager.codionslab.com/api/v1/logout', {},  options)
+      .then(response => {
+        console.log("response:", response);
+      })
+      .catch(error => {
+        console.log("error:", error);
+      });
+      return <Alert message="Logged Out Succesfully" description={error} type="error" showIcon />;
+  }
 
   return (
     <>
       <Table dataSource={dataSource} columns={columns} rowKey="id" />
+      <button onClick={handleLogOut}>Log Out</button>
     </>
   );
 };
