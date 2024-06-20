@@ -12,6 +12,7 @@ const Profile: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [pageUrl, setPageUrl] = useState(null)
 
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
@@ -35,6 +36,35 @@ const Profile: React.FC = () => {
         setLoading(false);
         console.log("error:", error);
       });
+
+      axios.get('https://task-manager.codionslab.com/api/v1/project', options)
+      .then(response => {
+        // setLoading(false);
+        console.log("2nd response:", response);
+        console.log("2nd response.data.data:", response.data.data);
+        // setUserData(response.data.data);
+        const firstPageUrl = response.data.data.first_page_url;
+        console.log("firstPageUrl:", firstPageUrl);
+        setPageUrl(firstPageUrl)
+
+        axios.get("https://task-manager.codionslab.com/api/v1/project?page=1" , options).then(response => {
+          // setLoading(false);
+          console.log("3rd response:", response);
+          console.log("3rd response.data.data:", response.data.data);
+        })
+        .catch(error => {
+          // setError('Please Login');
+          setLoading(false);
+          console.log("error:", error);
+        });
+      })
+      .catch(error => {
+        // setError('Please Login');
+        setLoading(false);
+        console.log("error:", error);
+      });
+
+      
   }, []);
 
   useEffect(() => {
