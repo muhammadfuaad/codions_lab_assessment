@@ -6,7 +6,7 @@ import UsersIndex from './Components/User/UsersIndex'
 import Login from './Components/User/Login'
 import Profile from './Components/User/Profile'
 // import Update from './Components/User/Update'
-import Projects from './Components/User/Projects'
+import Projects from './Components/Projects'
 function App() {
 
   return (

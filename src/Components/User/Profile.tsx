@@ -13,6 +13,7 @@ const Profile: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [userData, setUserData] = useState<UserData | null>(null);
   const [pageUrl, setPageUrl] = useState(null)
+  const [projects, setProjects] = useState([])
 
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
@@ -51,6 +52,9 @@ const Profile: React.FC = () => {
           // setLoading(false);
           console.log("3rd response:", response);
           console.log("3rd response.data.data:", response.data.data);
+          console.log("3rd response.data.data.data:", response.data.data.data);
+          setProjects(response.data.data.data)
+
         })
         .catch(error => {
           // setError('Please Login');
@@ -125,6 +129,15 @@ const Profile: React.FC = () => {
   return (
     <>
       <Table dataSource={dataSource} columns={columns} rowKey="id" />
+      <p>There are {projects.length} projects assigned to you.</p>
+      {projects && projects.map((project)=>{
+        return <>
+          <p><span className='font-bold bg-black'>Id: </span>{project.id}</p>
+          <p><span>Name: </span>{project.name}</p>
+          <p><span>Description: </span>{project.description}</p>
+        </>
+
+       })}
       <Button type="primary" onClick={handleLogOut}>
         Log Out
       </Button>
