@@ -43,7 +43,9 @@ const Profile: React.FC = () => {
 
   const handleUpdate = (id) => {
     console.log(`${id} clicked`);
-    navigate("/register", {state: {userData}})
+    const user = users.find((user)=> user.id === id)
+    
+    navigate("/register", { state: {name: user.name, email: user.email, password: user.password} });
     axios.put(`https://task-manager.codionslab.com/api/v1/admin/user/${id}`, options)
       .then(response => {
         console.log("response:", response);
