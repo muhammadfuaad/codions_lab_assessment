@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Table, Spin, Alert, Button, notification } from 'antd';
+import { useNavigate } from 'react-router';
 
 interface UserData {
   id: number;
@@ -9,6 +10,17 @@ interface UserData {
 }
 
 const Profile: React.FC = () => {
+  const navigate = useNavigate()
+  const savedToken = localStorage.getItem("token");
+  console.log('savedToken:', savedToken);
+  
+  const options = {
+    headers: {
+      Accept: 'application/json',
+      Authorization: `Bearer ${savedToken}`,
+    },
+  };
+
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [userData, setUserData] = useState<UserData | null>(null);
@@ -18,14 +30,6 @@ const Profile: React.FC = () => {
   const [projects, setProjects] = useState([])
 
   const handleDelete = (id) => {
-    const savedToken = localStorage.getItem("token");
-    console.log('savedToken:', savedToken);
-    const options = {
-      headers: {
-        Accept: 'application/json',
-        Authorization: `Bearer ${savedToken}`,
-      },
-    };
     console.log(`${id} clicked`);
     axios.delete(`https://task-manager.codionslab.com/api/v1/admin/user/${id}`, options)
       .then(response => {
@@ -37,16 +41,21 @@ const Profile: React.FC = () => {
     
   }
 
-  useEffect(() => {
-    const savedToken = localStorage.getItem("token");
-    console.log('savedToken:', savedToken);
+  const handleUpdate = (id) => {
+    console.log(`${id} clicked`);
+    navigate("/register", {state: {userData}})
+    axios.put(`https://task-manager.codionslab.com/api/v1/admin/user/${id}`, options)
+      .then(response => {
+        console.log("response:", response);
+      })
+      .catch(error => {
+        console.log("error:", error);
+      });
     
-    const options = {
-      headers: {
-        Accept: 'application/json',
-        Authorization: `Bearer ${savedToken}`,
-      },
-    };
+  }
+
+  useEffect(() => {
+    
     axios.get('https://task-manager.codionslab.com/api/v1/profile', options)
       .then(response => {
         setLoading(false);
@@ -160,25 +169,22 @@ const Profile: React.FC = () => {
     {
       title: 'Actions',
       key: 'actions',
-    render: (text, record) => (
-      <Button type="link" onClick={() => handleDelete(record.id)}>
-        Delete
-      </Button>
-    ),
+      render: (_, record) => (
+        <>
+          <Button type="link" onClick={() => handleDelete(record.id)}>
+            Delete
+          </Button>
+          <Button type="link" onClick={() => handleUpdate(record.id)}>
+            Update
+          </Button>
+        </>
+      ),
     }
   ];
 
   const dataSource1 = userData ? [userData] : [];
   
   const handleLogOut = () => {
-    const savedToken = localStorage.getItem("token");
-    console.log('savedToken:', savedToken);
-
-    const options = {
-      headers: {
-        Authorization: `Bearer ${savedToken}`,
-      },
-    };
     axios.post('https://task-manager.codionslab.com/api/v1/logout', {},  options)
       .then(response => {
         console.log("response:", response);
