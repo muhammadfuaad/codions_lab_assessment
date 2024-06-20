@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Table, Spin, Alert } from 'antd';
+import { Table, Spin, Alert, Button, notification } from 'antd';
 
 interface UserData {
   id: number;
@@ -112,6 +112,9 @@ const Profile: React.FC = () => {
     axios.post('https://task-manager.codionslab.com/api/v1/logout', {},  options)
       .then(response => {
         console.log("response:", response);
+        notification.success({
+          message: 'Logged Out Successfully',
+        });
       })
       .catch(error => {
         console.log("error:", error);
@@ -122,7 +125,9 @@ const Profile: React.FC = () => {
   return (
     <>
       <Table dataSource={dataSource} columns={columns} rowKey="id" />
-      <button onClick={handleLogOut}>Log Out</button>
+      <Button type="primary" onClick={handleLogOut}>
+        Log Out
+      </Button>
     </>
   );
 };
