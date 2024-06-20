@@ -12,8 +12,30 @@ const Profile: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [users, setUsers] = useState<Users | null>(null);
+
   const [pageUrl, setPageUrl] = useState(null)
   const [projects, setProjects] = useState([])
+
+  const handleDelete = (id) => {
+    const savedToken = localStorage.getItem("token");
+    console.log('savedToken:', savedToken);
+    const options = {
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${savedToken}`,
+      },
+    };
+    console.log(`${id} clicked`);
+    axios.delete(`https://task-manager.codionslab.com/api/v1/admin/user/${id}`, options)
+      .then(response => {
+        console.log("response:", response);
+      })
+      .catch(error => {
+        console.log("error:", error);
+      });
+    
+  }
 
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
@@ -54,6 +76,22 @@ const Profile: React.FC = () => {
           console.log("3rd response.data.data:", response.data.data);
           console.log("3rd response.data.data.data:", response.data.data.data);
           setProjects(response.data.data.data)
+
+        })
+        .catch(error => {
+          // setError('Please Login');
+          setLoading(false);
+          console.log("error:", error);
+        });
+
+        axios.get("https://task-manager.codionslab.com/api/v1/admin/user" , options).then(response => {
+          // setLoading(false);
+          console.log("(users index api) response:", response);
+          console.log("(users index api) response.data.data:", response.data.data);
+          console.log("(users index api) response.data.data.data:", response.data.data.data);
+          setUsers(response.data.data.data)
+
+          // setProjects(response.data.data.data)
 
         })
         .catch(error => {
@@ -102,7 +140,35 @@ const Profile: React.FC = () => {
     }
   ];
 
-  const dataSource = userData ? [userData] : [];
+  const columns2 = [
+    {
+      title: 'Id',
+      dataIndex: 'id',
+      key: 'id',
+    },
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    
+    {
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
+    },
+    {
+      title: 'Actions',
+      key: 'actions',
+    render: (text, record) => (
+      <Button type="link" onClick={() => handleDelete(record.id)}>
+        Delete
+      </Button>
+    ),
+    }
+  ];
+
+  const dataSource1 = userData ? [userData] : [];
   
   const handleLogOut = () => {
     const savedToken = localStorage.getItem("token");
@@ -128,7 +194,7 @@ const Profile: React.FC = () => {
 
   return (
     <>
-      <Table dataSource={dataSource} columns={columns} rowKey="id" />
+      <Table dataSource={dataSource1} columns={columns} rowKey="id" />
       <p>There are {projects.length} projects assigned to you.</p>
       {projects && projects.map((project)=>{
         return <>
@@ -138,6 +204,9 @@ const Profile: React.FC = () => {
         </>
 
        })}
+       <p>Users: {users && users.length}</p>
+       <Table dataSource={users} columns={columns2} rowKey="id" />
+       
       <Button type="primary" onClick={handleLogOut}>
         Log Out
       </Button>
