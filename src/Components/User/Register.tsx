@@ -2,6 +2,7 @@ import React from 'react';
 import type { FormProps } from 'antd';
 import { Button, Checkbox, Form, Input } from 'antd';
 import axios from 'axios';
+import { useNavigate } from 'react-router';
 
 type FieldType = {
   name?: string;
@@ -11,9 +12,19 @@ type FieldType = {
 
 const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
   // console.log('Success:', values);
+  // const navigate = useNavigate();
   axios.post('https://task-manager.codionslab.com/api/v1/register', values)
     .then(response => {
-      console.log('Response:', response.data);
+      console.log('response.data:', response.data);
+      const token = response.data.data.token 
+      const user = response.data.data.user 
+
+      console.log('token:', token);
+      console.log('user:', user);
+
+      const navigate = useNavigate()
+      navigate("https://task-manager.codionslab.com/api/v1/profile")
+
     })
     .catch(error => {
       console.error('There was an error!', error);
@@ -36,7 +47,7 @@ const Register: React.FC = () => (
     autoComplete="off"
   >
     <Form.Item<FieldType>
-      label="Username"
+      label="Name"
       name="name"
       rules={[{ required: true, message: 'Please input your name!' }]}
     >
