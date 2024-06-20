@@ -2,7 +2,7 @@ import React from 'react';
 import type { FormProps } from 'antd';
 import { Button, Checkbox, Form, Input } from 'antd';
 import axios from 'axios';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 
 type FieldType = {
   name?: string;
@@ -10,33 +10,20 @@ type FieldType = {
   password?: string;
   remember?: string;
 };
+const location = useLocation()
+// console.log("location.state:", location.state);
+
 
 const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
   // console.log('Success:', values);
   // const navigate = useNavigate();
-  axios.post('https://task-manager.codionslab.com/api/v1/register', values)
-    .then(response => {
-      console.log('response.data:', response.data);
-      const token = response.data.data.token 
-      const user = response.data.data.user 
-
-      console.log('token:', token);
-      console.log('user:', user);
-
-      const navigate = useNavigate()
-      navigate("https://task-manager.codionslab.com/api/v1/profile")
-
-    })
-    .catch(error => {
-      console.error('There was an error!', error);
-    });
 };
 
 const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
   console.log('Failed:', errorInfo);
 };
 
-const Register: React.FC = () => (
+const Update: React.FC = () => (
   <Form
     name="basic"
     labelCol={{ span: 8 }}
@@ -87,4 +74,4 @@ const Register: React.FC = () => (
   </Form>
 );
 
-export default Register;
+export default Update;

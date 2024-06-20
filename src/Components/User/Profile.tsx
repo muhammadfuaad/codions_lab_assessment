@@ -2,37 +2,44 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Table, Spin, Alert } from 'antd';
 
-interface User {
+interface UserData {
   id: number;
   name: string;
   email: string;
-  username: string;
 }
 
-const UsersIndex: React.FC = () => {
-  const [users, setUsers] = useState<User[]>([]);
+const Profile: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [userData, setUserData] = useState<UserData | null>(null);
 
   useEffect(() => {
+    const savedToken = localStorage.getItem("token");
+    console.log('savedToken:', savedToken);
+    
     const options = {
       headers: {
         Accept: 'application/json',
-        Authorization: 'Bearer 1',
+        Authorization: `Bearer ${savedToken}`,
       },
     };
-    axios.get('https://task-manager.codionslab.com/api/v1/admin/user')
+    axios.get('https://task-manager.codionslab.com/api/v1/profile', options)
       .then(response => {
-        setUsers(response.data);
         setLoading(false);
+        console.log("response:", response);
+        console.log("response.data.data:", response.data.data);
+        setUserData(response.data.data);
       })
       .catch(error => {
-        setError('There was an error fetching the users');
+        setError('There was an error fetching the user data');
         setLoading(false);
         console.log("error:", error);
-        
       });
   }, []);
+
+  useEffect(() => {
+    console.log("userData:", userData);
+  }, [userData]);
 
   if (loading) {
     return <Spin size="large" />;
@@ -44,7 +51,7 @@ const UsersIndex: React.FC = () => {
 
   const columns = [
     {
-      title: 'ID',
+      title: 'Id',
       dataIndex: 'id',
       key: 'id',
     },
@@ -53,21 +60,21 @@ const UsersIndex: React.FC = () => {
       dataIndex: 'name',
       key: 'name',
     },
+    
     {
       title: 'Email',
       dataIndex: 'email',
       key: 'email',
-    },
-    {
-      title: 'Username',
-      dataIndex: 'username',
-      key: 'username',
-    },
+    }
   ];
 
+  const dataSource = userData ? [userData] : [];
+
   return (
-    <Table dataSource={users} columns={columns} rowKey="id" />
+    <>
+      <Table dataSource={dataSource} columns={columns} rowKey="id" />
+    </>
   );
 };
 
-export default UsersIndex;
+export default Profile;

@@ -5,7 +5,6 @@ import axios from 'axios';
 import { useNavigate } from 'react-router';
 
 type FieldType = {
-  name?: string;
   email? : string;
   password?: string;
   remember?: string;
@@ -14,11 +13,14 @@ type FieldType = {
 const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
   // console.log('Success:', values);
   // const navigate = useNavigate();
-  axios.post('https://task-manager.codionslab.com/api/v1/register', values)
+  axios.post('https://task-manager.codionslab.com/api/v1/login', values)
     .then(response => {
       console.log('response.data:', response.data);
       const token = response.data.data.token 
-      const user = response.data.data.user 
+      const user = response.data.data.user
+      localStorage.setItem("token", `${token}`)
+      const savedToken = localStorage.getItem("token") 
+      console.log('savedToken:', savedToken);
 
       console.log('token:', token);
       console.log('user:', user);
@@ -36,7 +38,7 @@ const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
   console.log('Failed:', errorInfo);
 };
 
-const Register: React.FC = () => (
+const Login: React.FC = () => (
   <Form
     name="basic"
     labelCol={{ span: 8 }}
@@ -47,13 +49,6 @@ const Register: React.FC = () => (
     onFinishFailed={onFinishFailed}
     autoComplete="off"
   >
-    <Form.Item<FieldType>
-      label="Name"
-      name="name"
-      rules={[{ required: true, message: 'Please input your name!' }]}
-    >
-      <Input />
-    </Form.Item>
 
     <Form.Item<FieldType>
       label="Email"
@@ -87,4 +82,4 @@ const Register: React.FC = () => (
   </Form>
 );
 
-export default Register;
+export default Login;
