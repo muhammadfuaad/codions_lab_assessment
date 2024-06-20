@@ -1,15 +1,23 @@
 import React from 'react';
 import type { FormProps } from 'antd';
 import { Button, Checkbox, Form, Input } from 'antd';
+import axios from 'axios';
 
 type FieldType = {
-  username?: string;
+  name?: string;
   password?: string;
   remember?: string;
 };
 
 const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
-  console.log('Success:', values);
+  // console.log('Success:', values);
+  axios.post('https://task-manager.codionslab.com/api/v1/register', values)
+    .then(response => {
+      console.log('Response:', response.data);
+    })
+    .catch(error => {
+      console.error('There was an error!', error);
+    });
 };
 
 const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
@@ -29,8 +37,8 @@ const Register: React.FC = () => (
   >
     <Form.Item<FieldType>
       label="Username"
-      name="username"
-      rules={[{ required: true, message: 'Please input your username!' }]}
+      name="name"
+      rules={[{ required: true, message: 'Please input your name!' }]}
     >
       <Input />
     </Form.Item>
