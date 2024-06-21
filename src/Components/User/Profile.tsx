@@ -45,15 +45,8 @@ const Profile: React.FC = () => {
     console.log(`${id} clicked`);
     const user = users.find((user)=> user.id === id)
     
-    navigate("/register", { state: {name: user.name, email: user.email, password: user.password} });
-    axios.put(`https://task-manager.codionslab.com/api/v1/admin/user/${id}`, options)
-      .then(response => {
-        console.log("response:", response);
-      })
-      .catch(error => {
-        console.log("error:", error);
-      });
-    
+    navigate("/register", { state: {id: user.id, name: user.name, email: user.email, password: user.password, role: user.role,
+      is_active: user.is_active, token: savedToken, options} });
   }
 
   useEffect(() => {
@@ -167,6 +160,11 @@ const Profile: React.FC = () => {
       title: 'Email',
       dataIndex: 'email',
       key: 'email',
+    },
+    {
+      title: 'Roles',
+      key: 'role',
+      dataIndex: 'role',
     },
     {
       title: 'Actions',
