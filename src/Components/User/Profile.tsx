@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Table, Spin, Alert, Button, notification } from 'antd';
+import { Table, Spin, Alert, Button, notification, Badge, Tag } from 'antd';
 import { useNavigate } from 'react-router';
 
 interface UserData {
@@ -45,13 +45,13 @@ const Profile: React.FC = () => {
     console.log(`${id} clicked`);
     const user = users.find((user)=> user.id === id)
     const isUserEdit = true
-    navigate("/register", { state: {id: user.id, name: user.name, email: user.email, password: user.password, role: user.role,
+    navigate("/update", { state: {id: user.id, name: user.name, email: user.email, password: user.password, role: user.role,
       is_active: user.is_active, token: savedToken, options, isUserEdit} });
   }
 
   const handleUpdate = () => {
     const isEdit = true
-    navigate("/register", { state: {userData, isEdit} });
+    navigate("/update", { state: {userData, isEdit} });
   }
 
   useEffect(() => {
@@ -170,16 +170,19 @@ const Profile: React.FC = () => {
       title: 'Roles',
       key: 'role',
       dataIndex: 'role',
+      render: (role) => (
+        <Tag color={(role == "admin") ? "#f50" : "#2db7f5"}>{role.toUpperCase()}</Tag>
+      ),
     },
     {
       title: 'Actions',
       key: 'actions',
       render: (_, record) => (
         <>
-          <Button type="link" onClick={() => handleDelete(record.id)}>
+          <Button type="danger" onClick={() => handleDelete(record.id)}>
             Delete
           </Button>
-          <Button type="link" onClick={() => handleUpdateUser(record.id)}>
+          <Button type="primary" onClick={() => handleUpdateUser(record.id)}>
             Update
           </Button>
         </>
