@@ -41,12 +41,17 @@ const Profile: React.FC = () => {
     
   }
 
-  const handleUpdate = (id) => {
+  const handleUpdateUser = (id) => {
     console.log(`${id} clicked`);
     const user = users.find((user)=> user.id === id)
-    
+    const isUserEdit = true
     navigate("/register", { state: {id: user.id, name: user.name, email: user.email, password: user.password, role: user.role,
-      is_active: user.is_active, token: savedToken, options} });
+      is_active: user.is_active, token: savedToken, options, isUserEdit} });
+  }
+
+  const handleUpdate = () => {
+    const isEdit = true
+    navigate("/register", { state: {userData, isEdit} });
   }
 
   useEffect(() => {
@@ -174,7 +179,7 @@ const Profile: React.FC = () => {
           <Button type="link" onClick={() => handleDelete(record.id)}>
             Delete
           </Button>
-          <Button type="link" onClick={() => handleUpdate(record.id)}>
+          <Button type="link" onClick={() => handleUpdateUser(record.id)}>
             Update
           </Button>
         </>
@@ -191,6 +196,7 @@ const Profile: React.FC = () => {
         notification.success({
           message: 'Logged Out Successfully',
         });
+        navigate("/login")
       })
       .catch(error => {
         console.log("error:", error);
@@ -200,7 +206,14 @@ const Profile: React.FC = () => {
 
   return (
     <>
+      <h3>Your Details</h3>
       <Table dataSource={dataSource1} columns={columns} rowKey="id" />
+      <Button type="primary" onClick={handleUpdate}>
+        Update Your Details
+      </Button>
+      <Button type="primary" onClick={handleLogOut}>
+        Log Out
+      </Button>
       <p>There are {projects.length} projects assigned to you.</p>
       {projects && projects.map((project)=>{
         return <>
@@ -210,12 +223,10 @@ const Profile: React.FC = () => {
         </>
 
        })}
-       <p>Users: {users && users.length}</p>
+       <h3>Number of Registered Users: {users && users.length}</h3>
        <Table dataSource={users} columns={columns2} rowKey="id" />
        
-      <Button type="primary" onClick={handleLogOut}>
-        Log Out
-      </Button>
+      
     </>
   );
 };
