@@ -2,51 +2,52 @@ import React from 'react';
 import type { FormProps } from 'antd';
 import { Button, Checkbox, Form, Input, notification } from 'antd';
 import axios from 'axios';
-// import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 
 type FieldType = {
   email?: string;
   password?: string;
-  remember?: boolean; // Changed from string to boolean
+  remember?: boolean; 
 };
 
-const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
-  axios.post('https://task-manager.codionslab.com/api/v1/login', values)
-    .then(response => {
-      console.log('response.data:', response.data);
-      const token = response.data.data.token;
-      const user = response.data.data.user;
-      localStorage.setItem("token", `${token}`);
-      const savedToken = localStorage.getItem("token");
-      console.log('savedToken:', savedToken);
+const Login: React.FC = () => {
+  const navigate = useNavigate();
 
-      console.log('token:', token);
-      console.log('user:', user);
-
-      // Show success notification
-      notification.success({
-        message: 'Login Successful',
-        description: `Welcome back, ${user.name}!`,
+  const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
+    axios.post('https://task-manager.codionslab.com/api/v1/login', values)
+      .then(response => {
+        console.log('response.data:', response.data);
+        const token = response.data.data.token;
+        const user = response.data.data.user;
+        localStorage.setItem("token", `${token}`);
+        const savedToken = localStorage.getItem("token");
+        console.log('savedToken:', savedToken);
+  
+        console.log('token:', token);
+        console.log('user:', user);
+  
+        notification.success({
+          message: 'Login Successful',
+          description: `Welcome back, ${user.name}!`,
+        });
+  
+        navigate("/profile");
+      })
+      .catch(error => {
+        console.error('error', error);
+  
+        notification.error({
+          message: 'Login Failed',
+          description: 'Please check your credentials and try again.',
+        });
       });
+  };
+  
+  const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
+    console.log('Failed:', errorInfo);
+  };
 
-      // const navigate = useNavigate();
-      // navigate("https://task-manager.codionslab.com/api/v1/profile");
-    })
-    .catch(error => {
-      console.error('error', error);
-
-      notification.error({
-        message: 'Login Failed',
-        description: 'Please check your credentials and try again.',
-      });
-    });
-};
-
-const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
-  console.log('Failed:', errorInfo);
-};
-
-const Login: React.FC = () => (
+  return (
   <>
     <h2>Login</h2>
     <Form
@@ -90,6 +91,6 @@ const Login: React.FC = () => (
       </Form.Item>
     </Form>
   </>
-);
+)};
 
 export default Login;

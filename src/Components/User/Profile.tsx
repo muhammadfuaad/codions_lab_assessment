@@ -222,9 +222,13 @@ const Profile: React.FC = () => {
           <p><span>Description: </span>{project.description}</p>
         </>
 
-       })}
-       <h3>Number of Registered Users: {users && users.length}</h3>
-       <Table dataSource={users} columns={columns2} rowKey="id" />
+      })}
+      {userData.role == "admin" && 
+        <>
+          <h3>Number of Registered Users: {users && users.length}</h3>
+          <Table dataSource={users} columns={columns2} rowKey="id" />
+        </>
+      }
        
       
     </>

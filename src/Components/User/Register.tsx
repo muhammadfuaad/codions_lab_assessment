@@ -16,13 +16,6 @@ const Register: React.FC = () => {
   const location = useLocation(); 
   const user = location.state ? location.state : null
   console.log("user:", user);
-  const options = {
-    headers: {
-      Accept: 'application/json',
-      Authorization: `Bearer ${user.token}`,
-    },
-  };
-  
 
   const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
     (!location.state ? axios.post('https://task-manager.codionslab.com/api/v1/register', values)
@@ -75,18 +68,13 @@ const Register: React.FC = () => {
 
   return (
     <>
-      <h2>{user.isUserEdit ? "Update User" : user.isEdit ? "Update Your Details" : "Register"}</h2>
+      <h2>Register</h2>
       <Form
         name="basic"
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
         style={{ maxWidth: 600 }}
-        // initialValues={{ name: user.name, email: user.email, password: user.password, role: user.role, remember: true }}
-        initialValues={user.isUserEdit ? { name: user.name, email: user.email, password: user.password, role: user.role, 
-          remember: true } : user.isEdit ? {name: user.userData.name, email: user.userData.email, password: user.userData.password, role: user.userData.role, 
-            remember: true} : {remember: true}}
-
-        // initialValues={{ remember: true }}
+        initialValues={{ remember: true }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
@@ -106,17 +94,6 @@ const Register: React.FC = () => {
         >
           <Input />
         </Form.Item>
-
-        {(user.isEdit || user.isUserEdit) && 
-          <Form.Item<FieldType>
-            label="Role"
-            name="role"
-            rules={[{ required: true, }]}
-          >
-            <Input />
-          </Form.Item>
-        }
-
 
         <Form.Item<FieldType>
           label="Password"
