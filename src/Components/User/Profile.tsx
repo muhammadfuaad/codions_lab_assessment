@@ -13,7 +13,6 @@ const Profile: React.FC = () => {
   const navigate = useNavigate()
   const savedToken = localStorage.getItem("token");
   console.log('savedToken:', savedToken);
-  
   const options = {
     headers: {
       Accept: 'application/json',
@@ -281,6 +280,9 @@ const Profile: React.FC = () => {
       }
 
       <h3>Listed projects: {totalProjects && totalProjects.length}</h3>
+      <Button type="primary" onClick={() => navigate("/projects/new")}>
+        New Project
+      </Button>
       {totalProjects && totalProjects.map((project)=>{
         const {id, name, description} = project
         return (  

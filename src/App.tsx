@@ -8,6 +8,7 @@ import Profile from './Components/User/Profile'
 import Projects from './Components/Projects/Projects'
 import Update from './Components/User/Update'
 import Show from './Components/Projects/Show'
+import Create from './Components/Projects/Create'
 function App() {
 
   return (
@@ -21,6 +22,8 @@ function App() {
           <Route path="/projects" element={<Projects />} />
           <Route path="/all_users" element={<UsersIndex />} />
           <Route path="/project_details" element={<Show />} />
+          <Route path="/projects/new" element={<Create />} />
+
 
         </Routes>
       </BrowserRouter>
