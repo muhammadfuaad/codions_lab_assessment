@@ -55,71 +55,85 @@ const Profile: React.FC = () => {
   }
 
   useEffect(() => {
-    
+    // it fetches user data
     axios.get('https://task-manager.codionslab.com/api/v1/profile', options)
-      .then(response => {
-        setLoading(false);
-        console.log("response:", response);
-        console.log("response.data.data:", response.data.data);
-        setUserData(response.data.data);
-      })
-      .catch(error => {
-        setError('Please Login');
-        setLoading(false);
-        console.log("error:", error);
-      });
+    .then(response => {
+      setLoading(false);
+      console.log("response:", response);
+      console.log("response.data.data:", response.data.data);
+      setUserData(response.data.data);
+    })
+    .catch(error => {
+      setError('Please Login');
+      setLoading(false);
+      console.log("error:", error);
+    });
 
-      axios.get('https://task-manager.codionslab.com/api/v1/project', options)
-      .then(response => {
-        // setLoading(false);
-        console.log("2nd response:", response);
-        console.log("2nd response.data.data:", response.data.data);
-        // setUserData(response.data.data);
-        const firstPageUrl = response.data.data.first_page_url;
-        console.log("firstPageUrl:", firstPageUrl);
-        setPageUrl(firstPageUrl)
+    // It fetches the projects assigned to user
+    axios.get('https://task-manager.codionslab.com/api/v1/project', options)
+    .then(response => {
+      // setLoading(false);
+      console.log("2nd response:", response);
+      console.log("2nd response.data.data:", response.data.data);
+      // setUserData(response.data.data);
+      const firstPageUrl = response.data.data.first_page_url;
+      console.log("firstPageUrl:", firstPageUrl);
+      setPageUrl(firstPageUrl)
 
-        axios.get("https://task-manager.codionslab.com/api/v1/project?page=1" , options).then(response => {
-          // setLoading(false);
-          console.log("3rd response:", response);
-          console.log("3rd response.data.data:", response.data.data);
-          console.log("3rd response.data.data.data:", response.data.data.data);
-          setProjects(response.data.data.data)
+      // axios.get("https://task-manager.codionslab.com/api/v1/project?page=1" , options).then(response => {
+      //   // setLoading(false);
+      //   console.log("3rd response:", response);
+      //   console.log("3rd response.data.data:", response.data.data);
+      //   console.log("3rd response.data.data.data:", response.data.data.data);
+      //   setProjects(response.data.data.data)
+      // })
+      // .catch(error => {
+      //   // setError('Please Login');
+      //   setLoading(false);
+      //   console.log("error:", error);
+      // });
+    })
+    .catch(error => {
+      // setError('Please Login');
+      setLoading(false);
+      console.log("error:", error);
+    });
 
-        })
-        .catch(error => {
-          // setError('Please Login');
-          setLoading(false);
-          console.log("error:", error);
-        });
+    // It fetches the all the registered users
+    axios.get("https://task-manager.codionslab.com/api/v1/admin/user" , options).then(response => {
+      // setLoading(false);
+      console.log("(users index api) response:", response);
+      console.log("(users index api) response.data.data:", response.data.data);
+      console.log("(users index api) response.data.data.data:", response.data.data.data);
+      setUsers(response.data.data.data)
 
-        axios.get("https://task-manager.codionslab.com/api/v1/admin/user" , options).then(response => {
-          // setLoading(false);
-          console.log("(users index api) response:", response);
-          console.log("(users index api) response.data.data:", response.data.data);
-          console.log("(users index api) response.data.data.data:", response.data.data.data);
-          setUsers(response.data.data.data)
+      // setProjects(response.data.data.data)
 
-          // setProjects(response.data.data.data)
+    })
+    .catch(error => {
+      // setError('Please Login');
+      setLoading(false);
+      console.log("error:", error);
+    });
 
-        })
-        .catch(error => {
-          // setError('Please Login');
-          setLoading(false);
-          console.log("error:", error);
-        });
-      })
-      .catch(error => {
-        // setError('Please Login');
-        setLoading(false);
-        console.log("error:", error);
-      });
-
-      
+    // It fetches the all the registered projects
+    axios.get("https://task-manager.codionslab.com/api/v1/admin/project" , options).then(response => {
+      // setLoading(false);
+      console.log("(projects api) response:", response);
+      console.log("(projects api) response.data.data:", response.data.data);
+      console.log("(projects api) response.data.data.data:", response.data.data.data);
+      setProjects(response.data.data.data)
+    })
+    .catch(error => {
+      // setError('Please Login');
+      setLoading(false);
+      console.log("error:", error);
+    });
   }, []);
 
   useEffect(() => {
     console.log("userData:", userData);
+    console.log("projects:", projects);
   }, [userData]);
 
   if (loading) {
