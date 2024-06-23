@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Table, Spin, Alert, Button, notification, Badge, Tag } from 'antd';
+import { Table, Spin, Alert, Button, notification, Card, Space, Tag } from 'antd';
 import { useNavigate } from 'react-router';
 
 interface UserData {
@@ -27,7 +27,22 @@ const Profile: React.FC = () => {
   const [users, setUsers] = useState<Users | null>(null);
 
   const [pageUrl, setPageUrl] = useState(null)
-  const [projects, setProjects] = useState([])
+  const [totalProjects, setTotalProjects] = useState([])
+  const [assignedProjects, setAssignedProjects] = useState([])
+  
+  const handleDeleteProject = (id: number) => {
+    console.log(`${id} clicked`);
+    axios.delete(`https://task-manager.codionslab.com/api/v1/admin/project/${id}`, options)
+      .then(response => {
+        console.log("(delete project api) response:", response);
+        notification.success({
+          message: 'Project Deleted Successfully',
+        });
+      })
+      .catch(error => {
+        console.log("(delete project api) error:", error);
+      });
+  }
 
   const handleDelete = (id) => {
     console.log(`${id} clicked`);
@@ -73,12 +88,13 @@ const Profile: React.FC = () => {
     axios.get('https://task-manager.codionslab.com/api/v1/project', options)
     .then(response => {
       // setLoading(false);
-      console.log("2nd response:", response);
-      console.log("2nd response.data.data:", response.data.data);
+      console.log("(user projects) response:", response);
+      console.log("(user projects) response.data.data:", response.data.data);
       // setUserData(response.data.data);
       const firstPageUrl = response.data.data.first_page_url;
       console.log("firstPageUrl:", firstPageUrl);
       setPageUrl(firstPageUrl)
+      setAssignedProjects(response.data.data.data)
 
       // axios.get("https://task-manager.codionslab.com/api/v1/project?page=1" , options).then(response => {
       //   // setLoading(false);
@@ -119,10 +135,10 @@ const Profile: React.FC = () => {
     // It fetches the all the registered projects
     axios.get("https://task-manager.codionslab.com/api/v1/admin/project" , options).then(response => {
       // setLoading(false);
-      console.log("(projects api) response:", response);
-      console.log("(projects api) response.data.data:", response.data.data);
-      console.log("(projects api) response.data.data.data:", response.data.data.data);
-      setProjects(response.data.data.data)
+      console.log("(admin projects api) response:", response);
+      console.log("(admin projects api) response.data.data:", response.data.data);
+      console.log("(admin projects api) response.data.data.data:", response.data.data.data);
+      setTotalProjects(response.data.data.data)
     })
     .catch(error => {
       // setError('Please Login');
@@ -133,7 +149,9 @@ const Profile: React.FC = () => {
 
   useEffect(() => {
     console.log("userData:", userData);
-    console.log("projects:", projects);
+    console.log("totalProjects:", totalProjects);
+    console.log("assignedProjects:", assignedProjects);
+
   }, [userData]);
 
   if (loading) {
@@ -231,23 +249,41 @@ const Profile: React.FC = () => {
       <Button type="primary" onClick={handleLogOut}>
         Log Out
       </Button>
-      <p>There are {projects.length} projects assigned to you.</p>
-      {projects && projects.map((project)=>{
-        return <>
-          <p><span className='font-bold bg-black'>Id: </span>{project.id}</p>
-          <p><span>Name: </span>{project.name}</p>
-          <p><span>Description: </span>{project.description}</p>
-        </>
-
+      <p>There are {assignedProjects.length} projects assigned to you.</p> 
+      {assignedProjects && assignedProjects.map((project)=>{
+        const {name, description} = project
+        return ( 
+          <>
+            <p><span className='font-bold bg-black'>Id: </span>{project.id}</p>
+            <p><span>Name: </span>{name}</p>
+            <p><span>Description: </span>{description}</p>
+          </>
+        )
       })}
       {userData.role == "admin" && 
         <>
-          <h3>Number of Registered Users: {users && users.length}</h3>
+          <h3>Registered Users: {users && users.length}</h3>
           <Table dataSource={users} columns={columns2} rowKey="id" />
         </>
       }
-       
-      
+
+      <h3>Listed projects: {totalProjects && totalProjects.length}</h3>
+      {totalProjects && totalProjects.map((project)=>{
+        const {id, name, description} = project
+        return (  
+          <Space direction="vertical" size={16}>
+            <Card title={`${id}) ${name}`} extra={<a href="#">More</a>} style={{ width: 300, height: "fit-content" }}>
+              <p>{description}</p>
+              <Button type="primary" onClick={() => handleUpdateProject(id)}>
+                Update
+              </Button>
+              <Button type="primary" onClick={() => handleDeleteProject(id)}>
+                Delete
+              </Button>
+            </Card>
+          </Space>
+        )
+      })}
     </>
   );
 };
