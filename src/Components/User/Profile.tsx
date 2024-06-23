@@ -30,7 +30,12 @@ const Profile: React.FC = () => {
   const [totalProjects, setTotalProjects] = useState([])
   const [assignedProjects, setAssignedProjects] = useState([])
   
-  const handleDeleteProject = (id: number) => {
+  // project actions
+  const showProject = (id: number) => {
+    navigate("/project_details", {state: {id, savedToken}} )
+  }
+
+  const deleteProject = (id: number) => {
     console.log(`${id} clicked`);
     axios.delete(`https://task-manager.codionslab.com/api/v1/admin/project/${id}`, options)
       .then(response => {
@@ -44,19 +49,25 @@ const Profile: React.FC = () => {
       });
   }
 
-  const handleDelete = (id) => {
+  const updateProject = (id: number) => {
     console.log(`${id} clicked`);
-    axios.delete(`https://task-manager.codionslab.com/api/v1/admin/user/${id}`, options)
-      .then(response => {
-        console.log("response:", response);
-      })
-      .catch(error => {
-        console.log("error:", error);
-      });
-    
+    const isUpdate = true
+    navigate("/project_details", {state: {id, savedToken, isUpdate}} )
   }
 
-  const handleUpdateUser = (id) => {
+    // user actions
+  const deleteUser = (id: number) => {
+    console.log(`${id} clicked`);
+    axios.delete(`https://task-manager.codionslab.com/api/v1/admin/user/${id}`, options)
+    .then(response => {
+      console.log("response:", response);
+    })
+    .catch(error => {
+      console.log("error:", error);
+    });
+  }
+
+  const updateUser = (id) => {
     console.log(`${id} clicked`);
     const user = users.find((user)=> user.id === id)
     const isUserEdit = true
@@ -211,10 +222,10 @@ const Profile: React.FC = () => {
       key: 'actions',
       render: (_, record) => (
         <>
-          <Button type="danger" onClick={() => handleDelete(record.id)}>
+          <Button type="primary" onClick={() => deleteUser(record.id)}>
             Delete
           </Button>
-          <Button type="primary" onClick={() => handleUpdateUser(record.id)}>
+          <Button type="primary" onClick={() => updateUser(record.id)}>
             Update
           </Button>
         </>
@@ -250,16 +261,18 @@ const Profile: React.FC = () => {
         Log Out
       </Button>
       <p>There are {assignedProjects.length} projects assigned to you.</p> 
-      {assignedProjects && assignedProjects.map((project)=>{
-        const {name, description} = project
-        return ( 
-          <>
-            <p><span className='font-bold bg-black'>Id: </span>{project.id}</p>
-            <p><span>Name: </span>{name}</p>
-            <p><span>Description: </span>{description}</p>
-          </>
-        )
-      })}
+      {assignedProjects && assignedProjects.map((project)=> 
+        {const {name, description} = project
+          return ( 
+            <>
+              <p><span className='font-bold bg-black'>Id: </span>{project.id}</p>
+              <p><span>Name: </span>{name}</p>
+              <p><span>Description: </span>{description}</p>
+            </>
+          )
+        })
+      }
+
       {userData.role == "admin" && 
         <>
           <h3>Registered Users: {users && users.length}</h3>
@@ -272,12 +285,12 @@ const Profile: React.FC = () => {
         const {id, name, description} = project
         return (  
           <Space direction="vertical" size={16}>
-            <Card title={`${id}) ${name}`} extra={<a href="#">More</a>} style={{ width: 300, height: "fit-content" }}>
+            <Card title={`${id}) ${name}`} extra={<a onClick={()=> showProject(id)}>More</a>} style={{ width: 300, height: "fit-content" }}>
               <p>{description}</p>
-              <Button type="primary" onClick={() => handleUpdateProject(id)}>
+              <Button type="primary" onClick={() => updateProject(id)}>
                 Update
               </Button>
-              <Button type="primary" onClick={() => handleDeleteProject(id)}>
+              <Button type="primary" onClick={() => deleteProject(id)}>
                 Delete
               </Button>
             </Card>
