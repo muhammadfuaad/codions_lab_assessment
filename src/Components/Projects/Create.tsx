@@ -2,6 +2,7 @@
 import axios from 'axios';
 import { Button, notification, Form, Input } from 'antd';
 import type { FormProps } from 'antd';
+import { useLocation } from 'react-router';
 
 const Create: React.FC = () => {
   const savedToken = localStorage.getItem("token");
@@ -13,6 +14,10 @@ const Create: React.FC = () => {
     },
   };
 
+  const location = useLocation()
+  const projectData = location.state
+  console.log("projectData:", projectData);
+  
   type FieldType = {
     name?: string;
     description?: string;
@@ -20,12 +25,27 @@ const Create: React.FC = () => {
 
   const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
     console.log("values:", values);
-    
-    axios.get("https://task-manager.codionslab.com/api/v1/admin/project/create", values, options)
-    .then(response=>{
+    const id = projectData.id
+    if (location !== null) {
+      console.log(`${id} clicked`);
+      axios.put(`https://task-manager.codionslab.com/api/v1/admin/project/${id}`, {...projectData, name: values.name,
+        description: values.description} , options)
+      .then(response => {
+        console.log("(update project api) response:", response);
+        notification.success({
+          message: 'Project Updated Successfully',
+        });
+      })
+      .catch(error => {
+        console.log("(update project api) error:", error);
+      });
+    } else {
+      axios.get("https://task-manager.codionslab.com/api/v1/admin/project/create", values, options)
+      .then(response=>{
       console.log("response:", response);
       notification.success({message: response})
-    }).catch(error=>{notification.error(error)})
+      }).catch(error=>{notification.error(error)})
+    }
   }
 
   const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
@@ -39,7 +59,9 @@ const Create: React.FC = () => {
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
         style={{ maxWidth: 600 }}
-        initialValues={{ remember: true }}
+        initialValues={{ name: projectData.name, description: projectData.description, contributors: projectData.users.map(
+          (user)=>user.name),
+         remember: true }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
@@ -60,9 +82,17 @@ const Create: React.FC = () => {
           <Input />
         </Form.Item>
 
+        {/* <Form.Item<FieldType>
+          label="Contributors"
+          name="contributors"
+          rules={[{ message: 'Add Controbutors' }]}
+        >
+          <Input />
+        </Form.Item> */}
+
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button type="primary" htmlType="submit">
-            Create New project
+          <Button type="primary" htmlType='submit'>
+            {location == null ? "Create New project" : "Update project"}
           </Button>
         </Form.Item>
       </Form> 
@@ -71,3 +101,6 @@ const Create: React.FC = () => {
 };
 
 export default Create;
+
+const values = {name: "xyz"}
+const projectData = {name: "abc", id: 1, role: "admin"}

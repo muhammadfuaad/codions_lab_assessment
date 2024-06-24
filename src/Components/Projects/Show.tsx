@@ -1,9 +1,8 @@
 // import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Card, Button, Spin, notification, Space, Avatar, Select } from 'antd';
-import { useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
-
 
 const Show: React.FC = () => {
   const [projectData, setProjectData] = useState({})
@@ -13,7 +12,7 @@ const Show: React.FC = () => {
   const users = localStorage.getItem("users")
   console.log("users:", users);
   console.log("localStorage:", localStorage);
-
+const navigate = useNavigate()
   
 
   const {name, description, is_active} = projectData
@@ -79,7 +78,7 @@ const Show: React.FC = () => {
     return <Spin size="large" />;
   }
   const contributors = projectData.users
-  const nonContributors = users.filter(user => !contributors.some(contributor => contributor.id === user.id));
+  // const nonContributors = users.filter(user => !contributors.some(contributor => contributor.id === user.id));
 
   
   return (
@@ -97,21 +96,10 @@ const Show: React.FC = () => {
                     )
                   })} 
                 </Space>
-                <Select
-                  mode="multiple"
-                  style={{ width: '100%' }}
-                  placeholder="Select non-contributors"
-                  // onChange={handleChange}
-                >
-                  {nonContributors.map(nonContributor => (
-                    <Option key={nonContributor.id} value={nonContributor.name}>
-                      {/* {nonContributor.username} */}
-                    </Option>
-                  ))}
-                </Select>
+                
                 
               </p>
-              <Button type="primary" onClick={() => showProject(id)}>
+              <Button type="primary" onClick={() => navigate("/projects/new", {state: projectData})}>
                 Update
               </Button>
               <Button type="primary" onClick={() => deleteProject(id)}>

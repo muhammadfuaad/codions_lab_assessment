@@ -1,12 +1,14 @@
 // import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { Button, Space, Card, Avatar, Select, Spin } from 'antd';
+import { Button, Space, Card, Avatar, Select, Spin, notification } from 'antd';
 import { useLocation } from 'react-router';
+import { useNavigate } from 'react-router';
 
 
 const Projects: React.FC = () => {
   const location = useLocation()
+  const navigate = useNavigate()
   const users = location.state
   console.log('location.state:', location.state);
 
@@ -40,6 +42,20 @@ const Projects: React.FC = () => {
     });
   }, [])
 
+  const deleteProject = (id: number) => {
+    console.log(`${id} clicked`);
+    axios.delete(`https://task-manager.codionslab.com/api/v1/admin/project/${id}`, options)
+      .then(response => {
+        console.log("(delete project api) response:", response);
+        notification.success({
+          message: 'Project Deleted Successfully',
+        });
+      })
+      .catch(error => {
+        console.log("(delete project api) error:", error);
+      });
+  }
+
   if (loading) {
     return <Spin size="large" />;
   }
@@ -47,9 +63,11 @@ const Projects: React.FC = () => {
   return (
     <>
       <h3>Listed projects: {totalProjects && totalProjects.length}</h3>
-      <Button type="primary" onClick={() => navigate("/projects/new")}>
-        New Project
-      </Button>
+      <div>
+        <Button type="primary" onClick={() => navigate("/projects/new")}>
+          New Project
+        </Button>
+      </div>
       {totalProjects && totalProjects.map((project)=>{
         const showProject = (id: number) => {
           navigate("/project_details", {state: {id, savedToken}} )
@@ -59,38 +77,27 @@ const Projects: React.FC = () => {
         const handleChange = (value) => {
           console.log(`Selected: ${value}`);
         }
-        const nonContributors = users.filter(user => !contributors.some(contributor => contributor.id === user.id));
-        console.log("nonContributors:", (nonContributors));
+        // const nonContributors = users.filter(user => !contributors.some(contributor => contributor.id === user.id));
+        // console.log("nonContributors:", (nonContributors));
         
         return (  
           <Space direction="vertical" size={16}>
             <Card title={`${id}) ${name}`} extra={<a onClick={()=> showProject(id)}>More</a>} style={{ width: 300,
               height: "fit-content" }}>
               <p>{description}</p>
-              <p>Contributors:
-                <Space size={16} wrap>
-                  {contributors.map((contributor)=>{
-                    return ( 
-                      <>
-                        <Avatar size={30} gap={2}>{contributor.name}</Avatar>
-                      </>
-                    )
-                  })} 
-                </Space>
-                <Select
-                  mode="multiple"
-                  style={{ width: '100%' }}
-                  placeholder="Select non-contributors"
-                  onChange={handleChange}
-                >
-                  {nonContributors.map(nonContributor => (
-                    <Option key={nonContributor.id} value={nonContributor.name}>
-                      {/* {nonContributor.username} */}
-                    </Option>
-                  ))}
-                </Select>
-                
-              </p>
+              {contributors.length > 0 && 
+                <p>Contributors:
+                  <Space size={16} wrap>
+                    {contributors.map((contributor)=>{
+                      return ( 
+                        <>
+                          <Avatar size={30} gap={2}>{contributor.name}</Avatar>
+                        </>
+                      )
+                    })} 
+                  </Space>
+                </p>
+              }     
               <Button type="primary" onClick={() => showProject(id)}>
                 Update
               </Button>

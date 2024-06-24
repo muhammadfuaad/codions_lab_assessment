@@ -1,1 +1,14 @@
 const nonContributors = users.filter(user => !contributors.some(contributor => contributor.id === user.id));
+
+<Select
+                  mode="multiple"
+                  style={{ width: '100%' }}
+                  placeholder="Select non-contributors"
+                  onChange={handleChange}
+                >
+                  {nonContributors.map(nonContributor => (
+                    <Option key={nonContributor.id} value={nonContributor.name}>
+                      {/* {nonContributor.username} */}
+                    </Option>
+                  ))} 
+                </Select>
