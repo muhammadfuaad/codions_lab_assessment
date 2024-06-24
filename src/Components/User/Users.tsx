@@ -116,6 +116,9 @@ const Users: React.FC = () => {
     <>
       {user.role == "admin" && (
         <>
+          <Button type="primary" onClick={() => navigate("/update", {state: {token: savedToken}})}>
+            New User
+          </Button>
           <h3>Registered Users: {users && users.length}</h3>
           <Table dataSource={users} columns={columns} rowKey="id" />
         </>

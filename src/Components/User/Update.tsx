@@ -2,13 +2,13 @@ import React from 'react';
 import type { FormProps } from 'antd';
 import { Button, Checkbox, Form, Input, notification } from 'antd';
 import axios from 'axios';
-import { useNavigate, useLocation } from 'react-router-dom'; // Corrected import
+import { useNavigate, useLocation } from 'react-router-dom'; 
 
 type FieldType = {
   name?: string;
   email?: string;
   password?: string;
-  remember?: boolean; // Changed to boolean
+  remember?: boolean; 
 };
 
 const Update: React.FC = () => {
@@ -16,26 +16,27 @@ const Update: React.FC = () => {
   const location = useLocation(); 
   const user = location.state ? location.state : null
   console.log("user:", user);
+  const token = localStorage.getItem("token")
   const options = {
     headers: {
       Accept: 'application/json',
-      Authorization: `Bearer ${user.token}`,
+      Authorization: `Bearer ${token}`,
     },
   };
   
-
   const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
+    (user.isUserEdit ?
       axios.put(`https://task-manager.codionslab.com/api/v1/admin/user/${user.id}`, {...values,
-        is_active: user.is_active}, user.options)
+        is_active: user.is_active}, options)
       .then(response => {
         console.log('response.data:', response.data);
 
         navigate("/users");
 
         notification.success({
-          message: 'Updated Successfully',
+          message: 'User Updated Successfully',
         });
-      }
+      })
       .catch(error => {
         console.error('There was an error!', error);
         notification.error({
@@ -43,8 +44,26 @@ const Update: React.FC = () => {
           description: 'Please try again.',
         });
       })
+      :
+      axios.post(`https://task-manager.codionslab.com/api/v1/admin/user/`, values, options)
+      .then(response => {
+        console.log('response.data:', response.data);
 
+        navigate("/users");
+
+        notification.success({
+          message: 'New User Registered Successfully',
+        });
+      })
+      .catch(error => {
+        console.error('There was an error!', error);
+        notification.error({
+          message: 'Registration Failed',
+          description: 'Please try again.',
+        });
+      })
     )
+    
   };
 
   const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
@@ -84,17 +103,14 @@ const Update: React.FC = () => {
         >
           <Input />
         </Form.Item>
-
-        {(user.isEdit || user.isUserEdit) && 
-          <Form.Item<FieldType>
-            label="Role"
-            name="role"
-            rules={[{ required: true, }]}
-          >
-            <Input />
-          </Form.Item>
-        }
-
+        
+        <Form.Item<FieldType>
+          label="Role"
+          name="role"
+          rules={[{ required: true }]}
+        >
+          <Input />
+        </Form.Item>
 
         <Form.Item<FieldType>
           label="Password"
@@ -118,7 +134,6 @@ const Update: React.FC = () => {
           </Button>
         </Form.Item>
       </Form>
-
     </>
   );
 };
