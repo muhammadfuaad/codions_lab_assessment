@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Table, Spin, Alert, Button, notification, Card, Space, Tag } from 'antd';
+import { Table, Spin, Alert, Button, notification, Card, Space, Tag, Avatar, Dropdown } from 'antd';
 import { useNavigate } from 'react-router';
+// import { DownOutlined } from '@ant-design/icons';
 
 interface UserData {
   id: number;
@@ -285,10 +286,29 @@ const Profile: React.FC = () => {
       </Button>
       {totalProjects && totalProjects.map((project)=>{
         const {id, name, description} = project
+        const contributors = project.users
+        // const projectAssignees = users.map((user)=>user.name)
+        // console.log("projectAssignees:", (projectAssignees));
+        // console.log("users:", (users));
+
+        
         return (  
           <Space direction="vertical" size={16}>
-            <Card title={`${id}) ${name}`} extra={<a onClick={()=> showProject(id)}>More</a>} style={{ width: 300, height: "fit-content" }}>
+            <Card title={`${id}) ${name}`} extra={<a onClick={()=> showProject(id)}>More</a>} style={{ width: 300,
+              height: "fit-content" }}>
               <p>{description}</p>
+              <p>Contributors:
+                <Space size={16} wrap>
+                  {contributors.map((contributor)=>{
+                    return ( 
+                      <>
+                        <Avatar size={30} gap={2}>{contributor.name}</Avatar>
+                      </>
+                    )
+                  })} 
+                </Space>
+                
+              </p>
               <Button type="primary" onClick={() => updateProject(id)}>
                 Update
               </Button>
