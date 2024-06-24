@@ -1,6 +1,6 @@
 // import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Card, Button, Spin, notification } from 'antd';
+import { Card, Button, Spin, notification, Space, Avatar, Select } from 'antd';
 import { useLocation } from 'react-router';
 import { useEffect, useState } from 'react';
 
@@ -10,6 +10,11 @@ const Show: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true)
   const [isEdit, setIsEdit] = useState<boolean>(false)
   // const [updatedDescription, setUpdatedDescription] = useState("")
+  const users = localStorage.getItem("users")
+  console.log("users:", users);
+  console.log("localStorage:", localStorage);
+
+  
 
   const {name, description, is_active} = projectData
   const location = useLocation()
@@ -73,24 +78,46 @@ const Show: React.FC = () => {
   if (loading) {
     return <Spin size="large" />;
   }
+  const contributors = projectData.users
+  const nonContributors = users.filter(user => !contributors.some(contributor => contributor.id === user.id));
+
   
   return (
     <>
-      <Card title={`${id}) ${name}`} style={{ width: 300, height: "fit-content" }}>
-        <p>{isEdit ? <textarea defaultValue={description} onChange={(e) => {
-            console.log("projectData:", projectData);
-            setProjectData({...projectData,description: e.target.value})
-          }
-          
-        }></textarea>
-          : description}</p>
-        <Button type="primary" onClick={() => updateProject(id)}>
-          {isEdit ? "Save Changes" : "Update"}
-        </Button>
-        <Button type="primary" onClick={() => deleteProject(id)}>
-          Delete
-        </Button>
-      </Card>
+      <Card title={`${id}) ${name}`} extra={<a onClick={()=> showProject(id)}>More</a>} style={{ width: 300,
+              height: "fit-content" }}>
+              <p>{description}</p>
+              <p>Contributors:
+                <Space size={16} wrap>
+                  {contributors.map((contributor)=>{
+                    return ( 
+                      <>
+                        <Avatar size={30} gap={2}>{contributor.name}</Avatar>
+                      </>
+                    )
+                  })} 
+                </Space>
+                <Select
+                  mode="multiple"
+                  style={{ width: '100%' }}
+                  placeholder="Select non-contributors"
+                  // onChange={handleChange}
+                >
+                  {nonContributors.map(nonContributor => (
+                    <Option key={nonContributor.id} value={nonContributor.name}>
+                      {/* {nonContributor.username} */}
+                    </Option>
+                  ))}
+                </Select>
+                
+              </p>
+              <Button type="primary" onClick={() => showProject(id)}>
+                Update
+              </Button>
+              <Button type="primary" onClick={() => deleteProject(id)}>
+                Delete
+              </Button>
+            </Card>
     </>
   );
 };

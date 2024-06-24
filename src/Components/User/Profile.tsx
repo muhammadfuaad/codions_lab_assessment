@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Table, Spin, Alert, Button, notification, Card, Space, Tag, Avatar, Dropdown } from 'antd';
+import { Table, Spin, Alert, Button, notification, Card, Space, Tag, Avatar, Select } from 'antd';
 import { useNavigate } from 'react-router';
 // import { DownOutlined } from '@ant-design/icons';
+import { addUsers } from '../../Redux/UsersSlice';
+import store from '../../Redux/Store';
+import { useSelector, useDispatch } from 'react-redux';
 
 interface UserData {
   id: number;
@@ -12,6 +15,7 @@ interface UserData {
 
 const Profile: React.FC = () => {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const savedToken = localStorage.getItem("token");
   console.log('savedToken:', savedToken);
   const options = {
@@ -29,12 +33,7 @@ const Profile: React.FC = () => {
   const [pageUrl, setPageUrl] = useState(null)
   const [totalProjects, setTotalProjects] = useState([])
   const [assignedProjects, setAssignedProjects] = useState([])
-  
   // project actions
-  const showProject = (id: number) => {
-    navigate("/project_details", {state: {id, savedToken}} )
-  }
-
   const deleteProject = (id: number) => {
     console.log(`${id} clicked`);
     axios.delete(`https://task-manager.codionslab.com/api/v1/admin/project/${id}`, options)
@@ -133,8 +132,8 @@ const Profile: React.FC = () => {
       console.log("(users index api) response.data.data:", response.data.data);
       console.log("(users index api) response.data.data.data:", response.data.data.data);
       setUsers(response.data.data.data)
+      localStorage.setItem("users", users)
 
-      // setProjects(response.data.data.data)
 
     })
     .catch(error => {
@@ -285,12 +284,16 @@ const Profile: React.FC = () => {
         New Project
       </Button>
       {totalProjects && totalProjects.map((project)=>{
+        const showProject = (id: number) => {
+          navigate("/project_details", {state: {id, savedToken}} )
+        }
         const {id, name, description} = project
         const contributors = project.users
-        // const projectAssignees = users.map((user)=>user.name)
-        // console.log("projectAssignees:", (projectAssignees));
-        // console.log("users:", (users));
-
+        const handleChange = (value) => {
+          console.log(`Selected: ${value}`);
+        }
+        const nonContributors = users.filter(user => !contributors.some(contributor => contributor.id === user.id));
+        console.log("nonContributors:", (nonContributors));
         
         return (  
           <Space direction="vertical" size={16}>
@@ -307,9 +310,21 @@ const Profile: React.FC = () => {
                     )
                   })} 
                 </Space>
+                <Select
+                  mode="multiple"
+                  style={{ width: '100%' }}
+                  placeholder="Select non-contributors"
+                  onChange={handleChange}
+                >
+                  {nonContributors.map(nonContributor => (
+                    <Option key={nonContributor.id} value={nonContributor.name}>
+                      {/* {nonContributor.username} */}
+                    </Option>
+                  ))}
+                </Select>
                 
               </p>
-              <Button type="primary" onClick={() => updateProject(id)}>
+              <Button type="primary" onClick={() => showProject(id)}>
                 Update
               </Button>
               <Button type="primary" onClick={() => deleteProject(id)}>
