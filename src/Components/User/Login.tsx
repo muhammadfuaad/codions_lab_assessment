@@ -20,11 +20,14 @@ const Login: React.FC = () => {
         const token = response.data.data.token;
         const user = response.data.data.user;
         localStorage.setItem("token", `${token}`);
+        localStorage.setItem('user', JSON.stringify(user));
         const savedToken = localStorage.getItem("token");
         console.log('savedToken:', savedToken);
+        console.log('localStorage:', localStorage);
+
   
         console.log('token:', token);
-        console.log('user:', user);
+        console.log('(login api) user:', user);
   
         notification.success({
           message: 'Login Successful',

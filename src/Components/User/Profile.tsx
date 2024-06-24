@@ -125,19 +125,7 @@ const Profile: React.FC = () => {
       console.log("error:", error);
     });
 
-    // It fetches the all the registered users
-    axios.get("https://task-manager.codionslab.com/api/v1/admin/user" , options).then(response => {
-      // setLoading(false);
-      console.log("(users index api) response:", response);
-      console.log("(users index api) response.data.data:", response.data.data);
-      console.log("(users index api) response.data.data.data:", response.data.data.data);
-      setUsers(response.data.data.data)
-    })
-    .catch(error => {
-      // setError('Please Login');
-      setLoading(false);
-      console.log("error:", error);
-    });
+    
 
   }, []);
 
@@ -172,47 +160,6 @@ const Profile: React.FC = () => {
       title: 'Email',
       dataIndex: 'email',
       key: 'email',
-    }
-  ];
-
-  const columns2 = [
-    {
-      title: 'Id',
-      dataIndex: 'id',
-      key: 'id',
-    },
-    {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    
-    {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
-    },
-    {
-      title: 'Roles',
-      key: 'role',
-      dataIndex: 'role',
-      render: (role) => (
-        <Tag color={(role == "admin") ? "#f50" : "#2db7f5"}>{role.toUpperCase()}</Tag>
-      ),
-    },
-    {
-      title: 'Actions',
-      key: 'actions',
-      render: (_, record) => (
-        <>
-          <Button type="primary" onClick={() => deleteUser(record.id)}>
-            Delete
-          </Button>
-          <Button type="primary" onClick={() => updateUser(record.id)}>
-            Update
-          </Button>
-        </>
-      ),
     }
   ];
 
@@ -256,14 +203,9 @@ const Profile: React.FC = () => {
         })
       }
 
-      {userData.role == "admin" && 
-        <>
-          <h3>Registered Users: {users && users.length}</h3>
-          <Table dataSource={users} columns={columns2} rowKey="id" />
-        </>
-      }
-
       <Button type="primary" onClick={()=>{navigate("/projects", {state: users})}}>All Projects</Button>
+      <Button type="primary" onClick={()=>{navigate("/users", {state: users})}}>All Users</Button>
+
     </>
   );
 };

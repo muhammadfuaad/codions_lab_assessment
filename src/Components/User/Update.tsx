@@ -25,39 +25,17 @@ const Update: React.FC = () => {
   
 
   const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
-    (!location.state ? axios.post('https://task-manager.codionslab.com/api/v1/register', values)
-      .then(response => {
-        console.log('response.data:', response.data);
-        const token = response.data.data.token;
-        const user = response.data.data.user;
-
-        navigate("/profile", { state: { token, user } }); 
-
-        notification.success({
-          message: 'Registration Successful',
-          description: `Welcome, ${user.name}!`,
-        });
-      })
-      .catch(error => {
-        console.error('There was an error!', error);
-        notification.error({
-          message: 'Registration Failed',
-          description: 'Please try again.',
-        });
-      }) :
       axios.put(`https://task-manager.codionslab.com/api/v1/admin/user/${user.id}`, {...values,
         is_active: user.is_active}, user.options)
       .then(response => {
         console.log('response.data:', response.data);
-        const token = response.data.data.token;
-        const user = response.data.data.user;
 
-        navigate("/profile", { state: { token, user } });
+        navigate("/users");
 
         notification.success({
           message: 'Updated Successfully',
         });
-      })
+      }
       .catch(error => {
         console.error('There was an error!', error);
         notification.error({
