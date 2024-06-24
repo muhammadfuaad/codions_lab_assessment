@@ -16,6 +16,8 @@ const Create: React.FC = () => {
 
   const location = useLocation()
   const projectData = location.state
+  console.log("location:", location);
+
   console.log("projectData:", projectData);
   
   type FieldType = {
@@ -25,8 +27,8 @@ const Create: React.FC = () => {
 
   const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
     console.log("values:", values);
-    const id = projectData.id
-    if (location !== null) {
+    const id = projectData?.id
+    if (projectData !== null) {
       console.log(`${id} clicked`);
       axios.put(`https://task-manager.codionslab.com/api/v1/admin/project/${id}`, {...projectData, name: values.name,
         description: values.description} , options)
@@ -40,10 +42,10 @@ const Create: React.FC = () => {
         console.log("(update project api) error:", error);
       });
     } else {
-      axios.get("https://task-manager.codionslab.com/api/v1/admin/project/create", values, options)
+      axios.post("https://task-manager.codionslab.com/api/v1/admin/project", values, options)
       .then(response=>{
       console.log("response:", response);
-      notification.success({message: response})
+      notification.success({message: "Project Added Successfully"})
       }).catch(error=>{notification.error(error)})
     }
   }
@@ -54,14 +56,14 @@ const Create: React.FC = () => {
 
   return (
     <>
+      <h3>{projectData == null ? "Add New project" : "Update Project"}</h3>
       <Form
         name="basic"
         labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
+        wrapperCol={{ span: 24 }}
         style={{ maxWidth: 600 }}
-        initialValues={{ name: projectData.name, description: projectData.description, contributors: projectData.users.map(
-          (user)=>user.name),
-         remember: true }}
+        initialValues={(location !== null) ? { name: projectData?.name, description: projectData?.description, 
+          contributors: projectData?.users.map((user)=>user.name),remember: true } : {remember: true }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
@@ -92,7 +94,7 @@ const Create: React.FC = () => {
 
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
           <Button type="primary" htmlType='submit'>
-            {location == null ? "Create New project" : "Update project"}
+            {(projectData === null) ? "Create New project" : "Update project"}
           </Button>
         </Form.Item>
       </Form> 
@@ -101,6 +103,3 @@ const Create: React.FC = () => {
 };
 
 export default Create;
-
-const values = {name: "xyz"}
-const projectData = {name: "abc", id: 1, role: "admin"}
