@@ -17,8 +17,15 @@ const TaskForm: React.FC = () => {
 
   const location = useLocation()
   const state = location.state
-  const {id, name, description, due_date, status} = state.newTask
-  const projectId = state.projectId
+  const {
+    id = null,
+    name = '',
+    description = '',
+    due_date = null,
+    status = ''
+  } = state?.newTask || {};
+  const projectId = state?.projectId || '';
+
   console.log("location:", location);
 
   console.log("state:", state);
@@ -32,13 +39,25 @@ const TaskForm: React.FC = () => {
 
   const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
     console.log("values:", values);
-    axios.put(`https://task-manager.codionslab.com/api/v1/project/${projectId}/task/${id}`, values, options)
-    .then(response => {
-      notification.success({message: "Task Updated Successfully"})
-    })
-    .catch(error => {
-      console.log("error:", error);
-    });
+    if (location.pathname !== "/new_task") {
+      axios.put(`https://task-manager.codionslab.com/api/v1/project/${projectId}/task/${id}`, values, options)
+      .then(response => {
+        notification.success({message: "Task Updated Successfully"})
+      })
+      .catch(error => {
+        console.log("error:", error);
+      });
+    } else {
+      axios.post(`https://task-manager.codionslab.com/api/v1/project/${state}/task`, {...values, parent_id: projectId},
+        options)
+      .then(response => {
+        notification.success({message: "New Task Added Successfully"})
+      })
+      .catch(error => {
+        console.log("error:", error);
+      });
+    }
+    
     
   }
 
@@ -77,13 +96,13 @@ const TaskForm: React.FC = () => {
 
   return (
     <div className='bg-gray-100 p-12 rounded-xl'>
-      <h2 className='font-bold text-2xl mb-16'>Update Task</h2>
+      <h2 className='font-bold text-2xl mb-16'>{location.pathname !== "/new_task" ? "Update Task" : "New Task"}</h2>
       <Form
         name="basic"
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 24 }}
         style={{ maxWidth: 600 }}
-        initialValues={(location !== null) ? { name, description, due_date, status, remember: true } : {remember: true }}
+        initialValues={(location.pathname !== "/new_task") ? { name, description, due_date, status, remember: true } : {remember: true }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
@@ -130,7 +149,7 @@ const TaskForm: React.FC = () => {
 
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
           <Button type="primary" htmlType='submit'>
-            Update
+            {location.pathname !== "/new_task" ? "Update Task" : "Add Task"}
           </Button>
         </Form.Item>
       </Form> 

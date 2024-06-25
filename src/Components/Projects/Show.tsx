@@ -40,6 +40,8 @@ const Show: React.FC = () => {
     .then(response => {
       setProjectData(response.data.data)
       setLoading(false)
+      console.log("response.data.data:", response.data.data);
+      
     })
     .catch(error => {
       setLoading(false);
@@ -72,20 +74,6 @@ const Show: React.FC = () => {
       });
   }
 
-  const updateProject = (id: number) => {
-    console.log(`${id} clicked`);
-    axios.put(`https://task-manager.codionslab.com/api/v1/admin/project/${id}`, projectData, options)
-    .then(response => {
-      console.log("(update project api) response:", response);
-      notification.success({
-        message: 'Project Updated Successfully',
-      });
-    })
-    .catch(error => {
-      console.log("(update project api) error:", error);
-    });
-    setIsEdit(false)
-  }
 
   // task actions
   const deleteTask = (taskId: number) => {
@@ -108,6 +96,10 @@ const Show: React.FC = () => {
     return <Spin size="large" />;
   }
   const contributors = projectData.users
+  console.log("projectData:", projectData);
+
+  console.log("contributors:", contributors);
+  
   // const nonContributors = users.filter(user => !contributors.some(contributor => contributor.id === user.id));
 
   function formatDate(isoDateString) {
@@ -132,8 +124,9 @@ const Show: React.FC = () => {
         height: "fit-content" }}>
         <p><span className='font-semibold text-md'>Description: </span>{description}</p>
         <p className='mt-8'><span className='font-semibold text-md'>Contributors: </span>
+          {contributors.length == 0 && "There is no contributor for this project"}
           <Space size={16} wrap>
-            {contributors.map((contributor)=>{
+            {contributors && contributors.map((contributor)=>{
               return ( 
                 <>
                   <Avatar size={30} gap={2}>{contributor.name}</Avatar>
@@ -142,7 +135,10 @@ const Show: React.FC = () => {
             })} 
           </Space>
         </p>
-        <h3 className='font-semibold text-md mt-12'>Tasks:</h3>
+        <h3 className='font-semibold text-md mt-12'>Tasks: {tasks.length ==0 && <span className='font-normal'>No task is added to this prject</span>}</h3>
+        <Button type="primary" onClick={() => navigate("/new_task", {state: projectId})}>
+            New Task
+          </Button>
         <div className='flex flex-col gap-4'>
           {tasks.map((task)=>{
             const {id, name, description, due_date, assignee_id, status, created_at, updated_at } = task
