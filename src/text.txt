@@ -12,3 +12,14 @@ const nonContributors = users.filter(user => !contributors.some(contributor => c
                     </Option>
                   ))} 
                 </Select>
+3) tailwind.config.js:
+
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ["./src/***/**/*.{html,js,jsx,tsx}", "./src/**/*.{html,js,jsx,tsx}", "./src/*.{html,js,jsx,tsx}"],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+
