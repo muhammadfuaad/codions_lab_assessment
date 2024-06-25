@@ -17,7 +17,7 @@ const TaskForm: React.FC = () => {
   const location = useLocation()
   const state = location.state
   const {id, name, description, due_date, status} = state.task
-  const projectId = state.id
+  const projectId = state.projectId
   console.log("location:", location);
 
   console.log("state:", state);

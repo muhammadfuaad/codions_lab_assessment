@@ -9,7 +9,7 @@ const Show: React.FC = () => {
   const [tasks, setTasks] = useState([])
   const [loading, setLoading] = useState<boolean>(true)
   const [isEdit, setIsEdit] = useState<boolean>(false)
-  const [projectId, setProjectId] = useState(null)
+  // const [projectId, setProjectId] = useState(null)
   const [taskId, setTaskId] = useState(null)
 
 
@@ -22,6 +22,8 @@ const navigate = useNavigate()
   const {name, description, is_active} = projectData
   const location = useLocation()
   const id = location.state.id
+  const projectId = location.state.id
+
   const savedToken = location.state.savedToken
   
   console.log("isEdit:", isEdit);
@@ -38,7 +40,7 @@ const navigate = useNavigate()
     if (location && location.state.isUpdate) {
       setIsEdit(true)
     }
-    axios.get(`https://task-manager.codionslab.com/api/v1/project/${id}`, options)
+    axios.get(`https://task-manager.codionslab.com/api/v1/project/${projectId}`, options)
     .then(response => {
       setProjectData(response.data.data)
       setLoading(false)
@@ -48,7 +50,7 @@ const navigate = useNavigate()
       console.log("error:", error);
     });
 
-    axios.get(`https://task-manager.codionslab.com/api/v1/project/${id}/task`, options)
+    axios.get(`https://task-manager.codionslab.com/api/v1/project/${projectId}/task`, options)
     .then(response => {
       setTasks(response.data.data)
       setLoading(false)
@@ -58,7 +60,7 @@ const navigate = useNavigate()
       console.log("error:", error);
     });
     console.log("tasks:", tasks);
-    setProjectId(location.state.id)
+    // setProjectId(location.state.id)
 
   }, [])
 
@@ -144,7 +146,7 @@ const navigate = useNavigate()
               <div><h4 style={{display: "inline"}}>Added at: </h4>{created_at}</div>
               <div><h4 style={{display: "inline"}}>Updated at: </h4>{updated_at}</div>
               <div><h4 style={{display: "inline"}}>Due date: </h4>{due_date}</div>
-              <Button type="primary" onClick={() => navigate("/edit_task", {state: {task, id}})}>
+              <Button type="primary" onClick={() => navigate("/edit_task", {state: {task, projectId}})}>
                 Update
               </Button>
               <Button type="primary" onClick={() => deleteTask(id)}>
