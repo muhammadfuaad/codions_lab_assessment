@@ -82,29 +82,33 @@ const Projects: React.FC = () => {
         
         return (  
           <Space direction="vertical" size={16}>
-            <Card title={`${id}) ${name}`} extra={<a onClick={()=> showProject(id)}>More</a>} style={{ width: 300,
-              height: "fit-content" }}>
-              <p>{description}</p>
-              {contributors.length > 0 && 
-                <p>Contributors:
-                  <Space size={16} wrap>
-                    {contributors.map((contributor)=>{
-                      return ( 
-                        <>
-                          <Avatar size={30} gap={2}>{contributor.name}</Avatar>
-                        </>
-                      )
-                    })} 
-                  </Space>
-                </p>
-              }     
-              <Button type="primary" onClick={() => showProject(id)}>
-                Update
-              </Button>
-              <Button type="primary" onClick={() => deleteProject(id)}>
-                Delete
-              </Button>
-            </Card>
+            <div className='bg-gray-100 p-2 rounded-xl mb-4'>
+              <Card title={`${name}`} extra={<a onClick={()=> showProject(id)}>More Details</a>} style={{ width: 300,
+                height: "fit-content" }}>
+                <p><span className='font-semibold text-md'>Description: </span>{description}</p>
+                {contributors.length > 0 &&
+                  <p><span className='font-semibold text-md'>Contributors: </span>
+                    <Space size={16} wrap>
+                      {contributors.map((contributor)=>{
+                        return (
+                          <>
+                            <Avatar size={30} gap={2}>{contributor.name}</Avatar>
+                          </>
+                        )
+                      })}
+                    </Space>
+                  </p>
+                }
+                <div className='flex items-center justify-center gap-4 mt-8'>
+                  <Button type="primary" onClick={() => showProject(id)}>
+                    Update
+                  </Button>
+                  <Button type="primary" onClick={() => deleteProject(id)}>
+                    Delete
+                  </Button>
+                </div>
+              </Card>
+            </div>
           </Space>
         )
       })}
