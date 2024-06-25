@@ -127,11 +127,11 @@ const Show: React.FC = () => {
   }
   
   return (
-    <>
-      <Card title={`${id}) ${name}`} extra={<a onClick={()=> showProject(id)}>More</a>} style={{ width: 300,
+    <div className='bg-gray-100 rounded-xl'>
+      <Card title={`${name}`} style={{ width: 600,
         height: "fit-content" }}>
-        <p>{description}</p>
-        <p>Contributors:
+        <p><span className='font-semibold text-md'>Description: </span>{description}</p>
+        <p className='mt-8'><span className='font-semibold text-md'>Contributors: </span>
           <Space size={16} wrap>
             {contributors.map((contributor)=>{
               return ( 
@@ -142,31 +142,34 @@ const Show: React.FC = () => {
             })} 
           </Space>
         </p>
-        <h3>Tasks:</h3>
-        {tasks.map((task)=>{
-          const {id, name, description, due_date, assignee_id, status, created_at, updated_at } = task
-          const newTask = {...task, due_date: formatDate(due_date), created_at: formatDate(created_at), 
-          updated_at: formatDate(updated_at)}
-
-          return (
-            <div style={{background: "skyblue", border: "1px solid navy-blue"}}>
-              <div><h4 style={{display: "inline"}}>Task Id: </h4>{id}</div>
-              <div><h4 style={{display: "inline"}}>Description: </h4>{description}</div>
-              <div><h4 style={{display: "inline"}}>Added By: </h4>{name}</div>
-              <div><h4 style={{display: "inline"}}>Contributors: </h4>{assignee_id}</div>
-              <div><h4 style={{display: "inline"}}>Status: </h4>{status}</div>
-              <div><h4 style={{display: "inline"}}>Added at: </h4>{formatDate(created_at)}</div>
-              <div><h4 style={{display: "inline"}}>Updated at: </h4>{formatDate(updated_at)}</div>
-              <div><h4 style={{display: "inline"}}>Due date: </h4>{formatDate(due_date)}</div>
-              <Button type="primary" onClick={() => navigate("/edit_task", {state: {newTask, projectId}})}>
-                Update
-              </Button>
-              <Button type="primary" onClick={() => deleteTask(id)}>
-                Delete
-              </Button>
-            </div>
-          )
-        })}
+        <h3 className='font-semibold text-md mt-12'>Tasks:</h3>
+        <div className='flex flex-col gap-4'>
+          {tasks.map((task)=>{
+            const {id, name, description, due_date, assignee_id, status, created_at, updated_at } = task
+            const newTask = {...task, due_date: formatDate(due_date), created_at: formatDate(created_at),
+            updated_at: formatDate(updated_at)}
+            return (
+              <div className='bg-gray-100 p-12 rounded-xl'>
+                <div><h4 style={{display: "inline"}}>Task Id: </h4>{id}</div>
+                <div><h4 style={{display: "inline"}}>Description: </h4>{description}</div>
+                <div><h4 style={{display: "inline"}}>Added By: </h4>{name}</div>
+                <div><h4 style={{display: "inline"}}>Contributors: </h4>{assignee_id}</div>
+                <div><h4 style={{display: "inline"}}>Status: </h4>{status}</div>
+                <div><h4 style={{display: "inline"}}>Added at: </h4>{formatDate(created_at)}</div>
+                <div><h4 style={{display: "inline"}}>Updated at: </h4>{formatDate(updated_at)}</div>
+                <div><h4 style={{display: "inline"}}>Due date: </h4>{formatDate(due_date)}</div>
+                <div className='flex items-center justify-center gap-8 mt-8'>
+                  <Button type="primary" onClick={() => navigate("/edit_task", {state: {newTask, projectId}})}>
+                    Update
+                  </Button>
+                  <Button type="primary" onClick={() => deleteTask(id)}>
+                    Delete
+                  </Button>
+                </div>
+              </div>
+            )
+          })}
+        </div>
         <Button type="primary" onClick={() => navigate("/projects/new", {state: projectData})}>
           Update
         </Button>
@@ -174,7 +177,7 @@ const Show: React.FC = () => {
           Delete
         </Button>
       </Card>
-    </>
+    </div>
   );
 };
 
