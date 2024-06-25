@@ -71,8 +71,8 @@ const UserForm: React.FC = () => {
   };
 
   return (
-    <>
-      <h2>{user.isUserEdit ? "Update User" : user.isEdit ? "Update Your Details" : "Register"}</h2>
+    <div className='bg-gray-100 p-12 rounded-xl'>
+      <h2 className='font-bold text-2xl mb-16'>{user.isUserEdit ? "Update User" : user.isEdit ? "Update Your Details" : "Register"}</h2>
       <Form
         name="basic"
         labelCol={{ span: 8 }}
@@ -134,7 +134,7 @@ const UserForm: React.FC = () => {
           </Button>
         </Form.Item>
       </Form>
-    </>
+    </div>
   );
 };
 
