@@ -9,15 +9,11 @@ const Show: React.FC = () => {
   const [tasks, setTasks] = useState([])
   const [loading, setLoading] = useState<boolean>(true)
   const [isEdit, setIsEdit] = useState<boolean>(false)
-  // const [projectId, setProjectId] = useState(null)
-  const [taskId, setTaskId] = useState(null)
-
 
   const users = localStorage.getItem("users")
   console.log("users:", users);
   console.log("localStorage:", localStorage);
-const navigate = useNavigate()
-  
+  const navigate = useNavigate()
 
   const {name, description, is_active} = projectData
   const location = useLocation()
@@ -60,8 +56,6 @@ const navigate = useNavigate()
       console.log("error:", error);
     });
     console.log("tasks:", tasks);
-    // setProjectId(location.state.id)
-
   }, [])
 
   const deleteProject = (id: number) => {
@@ -151,7 +145,9 @@ const navigate = useNavigate()
         <h3>Tasks:</h3>
         {tasks.map((task)=>{
           const {id, name, description, due_date, assignee_id, status, created_at, updated_at } = task
-          const formattedDate = formatDate(due_date)
+          const newTask = {...task, due_date: formatDate(due_date), created_at: formatDate(created_at), 
+          updated_at: formatDate(updated_at)}
+
           return (
             <div style={{background: "skyblue", border: "1px solid navy-blue"}}>
               <div><h4 style={{display: "inline"}}>Task Id: </h4>{id}</div>
@@ -162,7 +158,7 @@ const navigate = useNavigate()
               <div><h4 style={{display: "inline"}}>Added at: </h4>{formatDate(created_at)}</div>
               <div><h4 style={{display: "inline"}}>Updated at: </h4>{formatDate(updated_at)}</div>
               <div><h4 style={{display: "inline"}}>Due date: </h4>{formatDate(due_date)}</div>
-              <Button type="primary" onClick={() => navigate("/edit_task", {state: {task, projectId}})}>
+              <Button type="primary" onClick={() => navigate("/edit_task", {state: {newTask, projectId}})}>
                 Update
               </Button>
               <Button type="primary" onClick={() => deleteTask(id)}>
