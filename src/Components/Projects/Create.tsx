@@ -1,4 +1,3 @@
-// import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Button, notification, Form, Input } from 'antd';
 import type { FormProps } from 'antd';
@@ -55,8 +54,8 @@ const Create: React.FC = () => {
   };
 
   return (
-    <>
-      <h3>{projectData == null ? "Add New project" : "Update Project"}</h3>
+    <div className='bg-gray-100 p-12 rounded-xl'>
+      <h2 className='font-bold text-2xl mb-16'>{projectData == null ? "Add New project" : "Update Project"}</h2>
       <Form
         name="basic"
         labelCol={{ span: 8 }}
@@ -98,7 +97,7 @@ const Create: React.FC = () => {
           </Button>
         </Form.Item>
       </Form> 
-    </>
+    </div>
   );
 };
 
