@@ -76,8 +76,8 @@ const TaskForm: React.FC = () => {
   
 
   return (
-    <>
-      <h3>Update Task</h3>
+    <div className='bg-gray-100 p-12 rounded-xl'>
+      <h2 className='font-bold text-2xl mb-16'>Update Task</h2>
       <Form
         name="basic"
         labelCol={{ span: 8 }}
@@ -134,7 +134,7 @@ const TaskForm: React.FC = () => {
           </Button>
         </Form.Item>
       </Form> 
-    </>
+    </div>
   );
 };
 
