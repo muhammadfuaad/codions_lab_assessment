@@ -86,6 +86,23 @@ const navigate = useNavigate()
     setIsEdit(false)
   }
 
+  // task actions
+  const deleteTask = (taskId: number) => {
+    // const taskId = id 
+    console.log("taskId:", taskId);
+    console.log("id:", id);
+    axios.delete(`https://task-manager.codionslab.com/api/v1/project/${id}/task/${taskId}`, options)
+    .then(response => {
+      console.log("(delete task api) response:", response);
+      notification.success({
+        message: 'Task Deleted Successfully',
+      });
+    })
+    .catch(error => {
+      console.log("(delete task api) error:", error);
+    });
+    
+  }
   if (loading) {
     return <Spin size="large" />;
   }
@@ -125,7 +142,7 @@ const navigate = useNavigate()
               <Button type="primary" onClick={() => navigate("/projects/new", {state: projectData})}>
                 Update
               </Button>
-              <Button type="primary" onClick={() => deleteProject(id)}>
+              <Button type="primary" onClick={() => deleteTask(id)}>
                 Delete
               </Button>
             </div>
