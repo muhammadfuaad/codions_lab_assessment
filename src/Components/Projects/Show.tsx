@@ -158,24 +158,26 @@ const Show: React.FC = () => {
                 <div><h4 style={{display: "inline"}}>Added at: </h4>{formatDate(created_at)}</div>
                 <div><h4 style={{display: "inline"}}>Updated at: </h4>{formatDate(updated_at)}</div>
                 <div><h4 style={{display: "inline"}}>Due date: </h4>{formatDate(due_date)}</div>
-                <div className='flex items-center justify-center gap-8 mt-8'>
+                <div className='flex items-center justify-center gap-4 mt-8'>
                   <Button type="primary" onClick={() => navigate("/edit_task", {state: {newTask, projectId}})}>
-                    Update
+                    Update Task
                   </Button>
                   <Button type="primary" onClick={() => deleteTask(id)}>
-                    Delete
+                    Delete Task
                   </Button>
                 </div>
               </div>
             )
           })}
         </div>
-        <Button type="primary" onClick={() => navigate("/projects/new", {state: projectData})}>
-          Update
-        </Button>
-        <Button type="primary" onClick={() => deleteProject(id)}>
-          Delete
-        </Button>
+        <div className='flex gap-4 my-12 justify-center items-center'>
+          <Button type="primary" onClick={() => navigate("/projects/new", {state: projectData})}>
+            Update Project
+          </Button>
+          <Button type="primary" onClick={() => deleteProject(id)}>
+            Delete Project
+          </Button>
+        </div>
       </Card>
     </div>
   );
