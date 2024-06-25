@@ -9,6 +9,10 @@ const Show: React.FC = () => {
   const [tasks, setTasks] = useState([])
   const [loading, setLoading] = useState<boolean>(true)
   const [isEdit, setIsEdit] = useState<boolean>(false)
+  const [projectId, setProjectId] = useState(null)
+  const [taskId, setTaskId] = useState(null)
+
+
   const users = localStorage.getItem("users")
   console.log("users:", users);
   console.log("localStorage:", localStorage);
@@ -54,6 +58,7 @@ const navigate = useNavigate()
       console.log("error:", error);
     });
     console.log("tasks:", tasks);
+    setProjectId(location.state.id)
 
   }, [])
 
@@ -139,7 +144,7 @@ const navigate = useNavigate()
               <div><h4 style={{display: "inline"}}>Added at: </h4>{created_at}</div>
               <div><h4 style={{display: "inline"}}>Updated at: </h4>{updated_at}</div>
               <div><h4 style={{display: "inline"}}>Due date: </h4>{due_date}</div>
-              <Button type="primary" onClick={() => navigate("/projects/new", {state: projectData})}>
+              <Button type="primary" onClick={() => navigate("/edit_task", {state: {task, id}})}>
                 Update
               </Button>
               <Button type="primary" onClick={() => deleteTask(id)}>

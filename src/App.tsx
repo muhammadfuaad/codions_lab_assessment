@@ -9,6 +9,7 @@ import Projects from './Components/Projects/Projects'
 import Update from './Components/User/Update'
 import Show from './Components/Projects/Show'
 import Create from './Components/Projects/Create'
+import TaskForm from './Components/Tasks/TaskForm'
 function App() {
 
   return (
@@ -23,6 +24,11 @@ function App() {
           <Route path="/users" element={<Users />} />
           <Route path="/project_details" element={<Show />} />
           <Route path="/projects/new" element={<Create />} />
+
+          <Route path="/edit_task" element={<TaskForm />} />
+          <Route path="/new_task" element={<TaskForm />} />
+
+
 
 
         </Routes>

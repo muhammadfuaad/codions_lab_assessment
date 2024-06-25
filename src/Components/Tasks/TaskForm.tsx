@@ -1,6 +1,6 @@
 // import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Button, notification, Form, Input } from 'antd';
+import { Button, Form, Input, notification } from 'antd';
 import type { FormProps } from 'antd';
 import { useLocation } from 'react-router';
 
@@ -15,39 +15,30 @@ const TaskForm: React.FC = () => {
   };
 
   const location = useLocation()
-  const projectData = location.state
+  const state = location.state
+  const {id, name, description, due_date, status} = state.task
+  const projectId = state.id
   console.log("location:", location);
 
-  console.log("projectData:", projectData);
+  console.log("state:", state);
   
   type FieldType = {
     name?: string;
     description?: string;
+    due_date?: string;
+    status?: string; 
   };
 
   const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
     console.log("values:", values);
-    const id = projectData?.id
-    if (projectData !== null) {
-      console.log(`${id} clicked`);
-      axios.put(`https://task-manager.codionslab.com/api/v1/admin/project/${id}`, {...projectData, name: values.name,
-        description: values.description} , options)
-      .then(response => {
-        console.log("(update project api) response:", response);
-        notification.success({
-          message: 'Project Updated Successfully',
-        });
-      })
-      .catch(error => {
-        console.log("(update project api) error:", error);
-      });
-    } else {
-      axios.post("https://task-manager.codionslab.com/api/v1/admin/project", values, options)
-      .then(response=>{
-      console.log("response:", response);
-      notification.success({message: "Project Added Successfully"})
-      }).catch(error=>{notification.error(error)})
-    }
+    axios.put(`https://task-manager.codionslab.com/api/v1/project/${projectId}/task/${id}`, values, options)
+    .then(response => {
+      notification.success({message: "Task Updated Successfully"})
+    })
+    .catch(error => {
+      console.log("error:", error);
+    });
+    
   }
 
   const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
@@ -56,14 +47,13 @@ const TaskForm: React.FC = () => {
 
   return (
     <>
-      <h3>{projectData == null ? "Add New project" : "Update Project"}</h3>
+      <h3>Update Task</h3>
       <Form
         name="basic"
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 24 }}
         style={{ maxWidth: 600 }}
-        initialValues={(location !== null) ? { name: projectData?.name, description: projectData?.description, 
-          contributors: projectData?.users.map((user)=>user.name),remember: true } : {remember: true }}
+        initialValues={(location !== null) ? { name, description, due_date, status, remember: true } : {remember: true }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
@@ -84,17 +74,25 @@ const TaskForm: React.FC = () => {
           <Input />
         </Form.Item>
 
-        {/* <Form.Item<FieldType>
-          label="Contributors"
-          name="contributors"
-          rules={[{ message: 'Add Controbutors' }]}
+        <Form.Item<FieldType>
+          label="Due Date"
+          name="due_date"
+          rules={[{ required: true, message: 'Project Description' }]}
         >
           <Input />
-        </Form.Item> */}
+        </Form.Item>
+
+        <Form.Item<FieldType>
+          label="Status"
+          name="status"
+          rules={[{ required: true, message: 'Project Description' }]}
+        >
+          <Input />
+        </Form.Item>
 
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
           <Button type="primary" htmlType='submit'>
-            {(projectData === null) ? "Create New project" : "Update project"}
+            Update
           </Button>
         </Form.Item>
       </Form> 
