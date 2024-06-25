@@ -51,7 +51,7 @@ const Profile: React.FC = () => {
   const updateProject = (id: number) => {
     console.log(`${id} clicked`);
     const isUpdate = true
-    navigate("/project_details", {state: {id, savedToken, isUpdate}} )
+    navigate("/project", {state: {id, savedToken, isUpdate}} )
   }
 
     // user actions

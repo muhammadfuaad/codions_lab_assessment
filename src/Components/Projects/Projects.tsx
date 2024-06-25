@@ -70,7 +70,7 @@ const Projects: React.FC = () => {
       </div>
       {totalProjects && totalProjects.map((project)=>{
         const showProject = (id: number) => {
-          navigate("/project_details", {state: {id, savedToken}} )
+          navigate("/project", {state: {id, savedToken}} )
         }
         const {id, name, description} = project
         const contributors = project.users

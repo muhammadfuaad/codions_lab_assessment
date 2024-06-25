@@ -4,7 +4,7 @@ import { Card, Button, Spin, notification, Space, Avatar, Select } from 'antd';
 import { useLocation, useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 
-const Show: React.FC = () => {
+const Project: React.FC = () => {
   const [projectData, setProjectData] = useState({})
   const [tasks, setTasks] = useState([])
   const [loading, setLoading] = useState<boolean>(true)
@@ -179,4 +179,4 @@ const Show: React.FC = () => {
   );
 };
 
-export default Show;
+export default Project;
