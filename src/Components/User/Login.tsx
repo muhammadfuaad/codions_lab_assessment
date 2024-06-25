@@ -51,8 +51,8 @@ const Login: React.FC = () => {
   };
 
   return (
-  <>
-    <h2>Login</h2>
+  <div className='bg-gray-100 p-12 rounded-xl'>
+    <h2 className='font-bold text-2xl mb-16'>Login</h2>
     <Form
       name="basic"
       labelCol={{ span: 8 }}
@@ -93,7 +93,7 @@ const Login: React.FC = () => {
         </Button>
       </Form.Item>
     </Form>
-  </>
+  </div>
 )};
 
 export default Login;
