@@ -116,6 +116,21 @@ const navigate = useNavigate()
   const contributors = projectData.users
   // const nonContributors = users.filter(user => !contributors.some(contributor => contributor.id === user.id));
 
+  function formatDate(isoDateString) {
+    const date = new Date(isoDateString);
+  
+    const options = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      // hour: '2-digit',
+      // minute: '2-digit',
+      // second: '2-digit',
+      // timeZoneName: 'short'
+    };
+  
+    return new Intl.DateTimeFormat('en-US', options).format(date);
+  }
   
   return (
     <>
@@ -136,6 +151,7 @@ const navigate = useNavigate()
         <h3>Tasks:</h3>
         {tasks.map((task)=>{
           const {id, name, description, due_date, assignee_id, status, created_at, updated_at } = task
+          const formattedDate = formatDate(due_date)
           return (
             <div style={{background: "skyblue", border: "1px solid navy-blue"}}>
               <div><h4 style={{display: "inline"}}>Task Id: </h4>{id}</div>
@@ -143,9 +159,9 @@ const navigate = useNavigate()
               <div><h4 style={{display: "inline"}}>Added By: </h4>{name}</div>
               <div><h4 style={{display: "inline"}}>Contributors: </h4>{assignee_id}</div>
               <div><h4 style={{display: "inline"}}>Status: </h4>{status}</div>
-              <div><h4 style={{display: "inline"}}>Added at: </h4>{created_at}</div>
-              <div><h4 style={{display: "inline"}}>Updated at: </h4>{updated_at}</div>
-              <div><h4 style={{display: "inline"}}>Due date: </h4>{due_date}</div>
+              <div><h4 style={{display: "inline"}}>Added at: </h4>{formatDate(created_at)}</div>
+              <div><h4 style={{display: "inline"}}>Updated at: </h4>{formatDate(updated_at)}</div>
+              <div><h4 style={{display: "inline"}}>Due date: </h4>{formatDate(due_date)}</div>
               <Button type="primary" onClick={() => navigate("/edit_task", {state: {task, projectId}})}>
                 Update
               </Button>
