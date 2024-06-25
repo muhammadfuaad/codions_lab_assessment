@@ -70,13 +70,13 @@ const Profile: React.FC = () => {
     console.log(`${id} clicked`);
     const user = users.find((user)=> user.id === id)
     const isUserEdit = true
-    navigate("/update", { state: {id: user.id, name: user.name, email: user.email, password: user.password, role: user.role,
+    navigate("/edit_user", { state: {id: user.id, name: user.name, email: user.email, password: user.password, role: user.role,
       is_active: user.is_active, token: savedToken, options, isUserEdit} });
   }
 
   const handleUpdate = () => {
     const isEdit = true
-    navigate("/update", { state: {userData, isEdit} });
+    navigate("/edit_user", { state: {userData, isEdit} });
   }
 
   useEffect(() => {

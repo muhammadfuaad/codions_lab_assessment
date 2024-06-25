@@ -60,7 +60,7 @@ const Users: React.FC = () => {
       console.log(`${id} clicked`);
       const user = users.find((user)=> user.id === id)
       const isUserEdit = true
-      navigate("/update", { state: {id: user.id, name: user.name, email: user.email, password: user.password, role: user.role,
+      navigate("/edit_user", { state: {id: user.id, name: user.name, email: user.email, password: user.password, role: user.role,
         is_active: user.is_active, token: savedToken, options, isUserEdit} });
     }
 
@@ -116,7 +116,7 @@ const Users: React.FC = () => {
     <>
       {user.role == "admin" && (
         <>
-          <Button type="primary" onClick={() => navigate("/update", {state: {token: savedToken}})}>
+          <Button type="primary" onClick={() => navigate("/edit_user", {state: {token: savedToken}})}>
             New User
           </Button>
           <h3>Registered Users: {users && users.length}</h3>

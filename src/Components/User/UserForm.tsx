@@ -11,7 +11,7 @@ type FieldType = {
   remember?: boolean; 
 };
 
-const Update: React.FC = () => {
+const UserForm: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation(); 
   const user = location.state ? location.state : null
@@ -138,4 +138,4 @@ const Update: React.FC = () => {
   );
 };
 
-export default Update;
+export default UserForm;

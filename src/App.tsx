@@ -6,7 +6,7 @@ import Users from './Components/User/Users'
 import Login from './Components/User/Login'
 import Profile from './Components/User/Profile'
 import Projects from './Components/Projects/Projects'
-import Update from './Components/User/Update'
+import UserForm from './Components/User/UserForm'
 import Project from './Components/Projects/Project'
 import Create from './Components/Projects/Create'
 import TaskForm from './Components/Tasks/TaskForm'
@@ -16,21 +16,19 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
+          {/* user */}
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/update" element={<Update />} />
+          <Route path="/edit_user" element={<UserForm />} />
           <Route path="/profile" element={<Profile />} />
+          {/* projects */}
           <Route path="/projects" element={<Projects />} />
           <Route path="/users" element={<Users />} />
           <Route path="/project" element={<Project />} />
           <Route path="/projects/new" element={<Create />} />
-
+          {/* tasks */}
           <Route path="/edit_task" element={<TaskForm />} />
           <Route path="/new_task" element={<TaskForm />} />
-
-
-
-
         </Routes>
       </BrowserRouter>
     </>
