@@ -46,10 +46,14 @@ const Users: React.FC = () => {
      // user actions
      const deleteUser = (id: number) => {
       console.log(`${id} clicked`);
+      setLoading(true)
       axios.delete(`https://task-manager.codionslab.com/api/v1/admin/user/${id}`, options)
       .then(response => {
+        setLoading(false)
         console.log("response:", response);
         notification.success({message: "User deleted successfully"})
+        const newUsers = users.filter((user)=>user.id !== id)
+        setUsers(newUsers)
       })
       .catch(error => {
         console.log("error:", error);

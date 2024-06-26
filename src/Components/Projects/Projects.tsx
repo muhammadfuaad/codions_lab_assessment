@@ -44,8 +44,12 @@ const Projects: React.FC = () => {
 
   const deleteProject = (id: number) => {
     console.log(`${id} clicked`);
+    setLoading(true)
     axios.delete(`https://task-manager.codionslab.com/api/v1/admin/project/${id}`, options)
       .then(response => {
+        const newTotalProjects = totalProjects.filter((project)=>project.id !== id)
+        setTotalProjects(newTotalProjects)
+        setLoading(false)
         console.log("(delete project api) response:", response);
         notification.success({
           message: 'Project Deleted Successfully',
