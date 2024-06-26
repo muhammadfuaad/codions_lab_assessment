@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Table, Spin, Alert, Button, notification, Card, Space, Tag, Avatar, Select } from 'antd';
+import { Table, Spin, Alert, Button, notification, Card, Space, Tag, Avatar, Select, Dropdown } from 'antd';
 import { useNavigate } from 'react-router';
 // import { DownOutlined } from '@ant-design/icons';
 import { addUsers } from '../../Redux/UsersSlice';
@@ -180,18 +180,40 @@ const Profile: React.FC = () => {
       return <Alert message="Logged Out Succesfully" description={error} type="error" showIcon />;
   }
 
+  const handleMenuClick: MenuProps['onClick'] = (e) => {
+    console.log('click', e);
+    if (e.key == 2) {
+      handleLogOut()
+    } else if (e.key == 1) {
+      handleUpdate()
+    }
+  };
+  
+  const items: MenuProps['items'] = [
+    {
+      label: 'Update Your Profile',
+      key: '1',
+    },
+    {
+      label: 'Log Out',
+      key: '2',
+    }
+  ];
+  
+  const menuProps = {
+    items,
+    onClick: handleMenuClick,
+  };
   return (
     <div className='bg-gray-100 p-12 rounded-xl'>
-      <h2 className='font-bold text-2xl mb-16'>Dashboard</h2>
-      <Table dataSource={dataSource1} columns={columns} rowKey="id" />
-      <div className="flex gap-4">
-        <Button type="primary" onClick={handleUpdate}>
-          Update Your Details
-        </Button>
-        <Button type="primary" onClick={handleLogOut}>
-          Log Out
-        </Button>
+      <div className='flex justify-between'>
+        <div></div>
+        <h2 className='font-bold text-2xl mb-16'>Dashboard</h2>
+        <Dropdown menu={menuProps}>
+          <Avatar size={25} gap={2}>{userData.name[0]}</Avatar>
+        </Dropdown>
       </div>
+      <Table dataSource={dataSource1} columns={columns} rowKey="id" />
       <p className='text-md'><span className='font-bold'>Assigned Projects: </span>{assignedProjects.length == 0 ? "No Assigned Project" : assignedProjects.length}</p> 
       {assignedProjects && assignedProjects.map((project)=> 
         {const {name, description} = project
@@ -204,12 +226,12 @@ const Profile: React.FC = () => {
           )
         })
       }
-
-      <div className="flex gap-4">
-        <Button type="primary" onClick={()=>{navigate("/projects", {state: users})}}>All Projects</Button>
-        <Button type="primary" onClick={()=>{navigate("/users", {state: users})}}>All Users</Button>
-      </div>
-
+      {userData.role === "admin" &&
+        <div className="flex gap-4">
+          <Button type="primary" onClick={()=>{navigate("/projects", {state: users})}}>All Projects</Button>
+          <Button type="primary" onClick={()=>{navigate("/users", {state: users})}}>All Users</Button>
+        </div>
+      }
     </div>
   );
 };
