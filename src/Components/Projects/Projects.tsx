@@ -1,7 +1,7 @@
 // import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { Button, Space, Card, Avatar, Select, Spin, notification } from 'antd';
+import { Button, Space, Card, Avatar, Select, Spin, notification, Tooltip } from 'antd';
 import { useLocation } from 'react-router';
 import { useNavigate } from 'react-router';
 
@@ -88,11 +88,14 @@ const Projects: React.FC = () => {
                 <p><span className='font-semibold text-md'>Description: </span>{description}</p>
                 {contributors.length > 0 &&
                   <p><span className='font-semibold text-md'>Contributors: </span>
-                    <Space size={16} wrap>
+                    <Space size={0} wrap>
                       {contributors.map((contributor)=>{
                         return (
                           <>
-                            <Avatar size={30} gap={2}>{contributor.name}</Avatar>
+                          <Tooltip placement="top" title={contributor.name}>
+                            <Avatar size={30} gap={1}>{contributor.name[0]}</Avatar>
+          
+                          </Tooltip>
                           </>
                         )
                       })}
