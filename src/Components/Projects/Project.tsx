@@ -7,8 +7,7 @@ import { useEffect, useState } from 'react';
 const Project: React.FC = () => {
   const [projectData, setProjectData] = useState({})
   const [tasks, setTasks] = useState([])
-  const [loading, setLoading] = useState<boolean>(true)
-  const [isEdit, setIsEdit] = useState<boolean>(false)
+  const [loading, setLoading] = useState(true)
 
   const users = localStorage.getItem("users")
   console.log("users:", users);
@@ -22,10 +21,6 @@ const Project: React.FC = () => {
 
   const savedToken = location.state.savedToken
   
-  console.log("isEdit:", isEdit);
-  console.log("location.state.isUpdate:", location.state.isUpdate);
-
-  
   const options = {
     headers: {
       Accept: 'application/json',
@@ -33,9 +28,6 @@ const Project: React.FC = () => {
     },
   };
   useEffect(()=>{
-    if (location && location.state.isUpdate) {
-      setIsEdit(true)
-    }
     axios.get(`https://task-manager.codionslab.com/api/v1/project/${projectId}`, options)
     .then(response => {
       setProjectData(response.data.data)
@@ -100,7 +92,13 @@ const Project: React.FC = () => {
 
   console.log("contributors:", contributors);
   
-  // const nonContributors = users.filter(user => !contributors.some(contributor => contributor.id === user.id));
+  const nonContributors = users;
+  console.log("nonContributors.length:", nonContributors.length);
+  console.log("nonContributors:", nonContributors);
+  console.log("users:", users);
+  console.log("users.length:", users.length);
+
+  
 
   function formatDate(isoDateString) {
     const date = new Date(isoDateString);
@@ -126,15 +124,13 @@ const Project: React.FC = () => {
         <p className='mt-8'><span className='font-bold text-md'>Contributors: </span>
           {contributors.length == 0 && "There is no contributor for this project"}
           <Space size={0} wrap>
-            {contributors && contributors.map((contributor)=>{
-              return ( 
+            {contributors && contributors.map((contributor)=>
                 <>
                   <Tooltip placement="top" title={contributor.name}>
                     <Avatar size={30} gap={1}>{contributor.name[0]}</Avatar>
                   </Tooltip>
                 </>
-              )
-            })} 
+            )} 
           </Space>
         </p>
         <h3 className='font-semibold text-md mt-12'>Tasks: {tasks.length ==0 && <span className='font-normal'>No task is added to this prject</span>}</h3>
