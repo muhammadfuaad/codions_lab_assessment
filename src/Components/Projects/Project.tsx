@@ -167,7 +167,7 @@ const Project: React.FC = () => {
           })}
         </div>
         <div className='flex gap-4 my-12 justify-center items-center'>
-          <Button type="primary" onClick={() => navigate("/projects/new", {state: projectData})}>
+          <Button type="primary" onClick={() => navigate("/edit_project", {state: projectData})}>
             Update Project
           </Button>
           <Button type="primary" onClick={() => deleteProject(id)}>

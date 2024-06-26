@@ -8,7 +8,7 @@ import Profile from './Components/User/Profile'
 import Projects from './Components/Projects/Projects'
 import UserForm from './Components/User/UserForm'
 import Project from './Components/Projects/Project'
-import Create from './Components/Projects/Create'
+import ProjectForm from './Components/Projects/ProjectForm'
 import TaskForm from './Components/Tasks/TaskForm'
 function App() {
 
@@ -25,7 +25,9 @@ function App() {
           <Route path="/projects" element={<Projects />} />
           <Route path="/users" element={<Users />} />
           <Route path="/project" element={<Project />} />
-          <Route path="/projects/new" element={<Create />} />
+          <Route path="/new_project" element={<ProjectForm />} />
+          <Route path="/edit_project" element={<ProjectForm />} />
+
           {/* tasks */}
           <Route path="/edit_task" element={<TaskForm />} />
           <Route path="/new_task" element={<TaskForm />} />

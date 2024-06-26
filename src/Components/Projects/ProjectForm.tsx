@@ -3,7 +3,7 @@ import { Button, notification, Form, Input } from 'antd';
 import type { FormProps } from 'antd';
 import { useLocation } from 'react-router';
 
-const Create: React.FC = () => {
+const ProjectForm: React.FC = () => {
   const savedToken = localStorage.getItem("token");
   console.log('savedToken:', savedToken);
   const options = {
@@ -62,7 +62,7 @@ const Create: React.FC = () => {
         wrapperCol={{ span: 24 }}
         style={{ maxWidth: 600 }}
         initialValues={(location !== null) ? { name: projectData?.name, description: projectData?.description, 
-          contributors: projectData?.users.map((user)=>user.name),remember: true } : {remember: true }}
+          contributors: projectData?.users.map((user)=>user.name), remember: true } : {remember: true }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
@@ -101,4 +101,4 @@ const Create: React.FC = () => {
   );
 };
 
-export default Create;
+export default ProjectForm;

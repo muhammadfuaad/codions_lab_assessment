@@ -64,7 +64,7 @@ const Projects: React.FC = () => {
     <>
       <h3>Listed projects: {totalProjects && totalProjects.length}</h3>
       <div>
-        <Button type="primary" onClick={() => navigate("/projects/new")}>
+        <Button type="primary" onClick={() => navigate("/new_project")}>
           New Project
         </Button>
       </div>
@@ -100,7 +100,7 @@ const Projects: React.FC = () => {
                   </p>
                 }
                 <div className='flex items-center justify-center gap-4 mt-8'>
-                  <Button type="primary" onClick={() => showProject(id)}>
+                  <Button type="primary" onClick={() => navigate("/edit_project", {state: project})}>
                     Update
                   </Button>
                   <Button type="primary" onClick={() => deleteProject(id)}>
