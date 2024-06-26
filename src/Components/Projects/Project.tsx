@@ -62,8 +62,11 @@ const Project: React.FC = () => {
 
   const deleteProject = (id: number) => {
     console.log(`${id} clicked`);
+    setLoading(true)
     axios.delete(`https://task-manager.codionslab.com/api/v1/admin/project/${id}`, options)
       .then(response => {
+        setLoading(false)
+        navigate("/projects")
         console.log("(delete project api) response:", response);
         notification.success({
           message: 'Project Deleted Successfully',
@@ -80,8 +83,12 @@ const Project: React.FC = () => {
     // const taskId = id 
     console.log("taskId:", taskId);
     console.log("id:", id);
+    setLoading(true)
     axios.delete(`https://task-manager.codionslab.com/api/v1/project/${id}/task/${taskId}`, options)
     .then(response => {
+      setLoading(false)
+      const newTasks = tasks.filter((task)=>task.id !== taskId)
+      setTasks(newTasks)
       console.log("(delete task api) response:", response);
       notification.success({
         message: 'Task Deleted Successfully',
@@ -90,11 +97,12 @@ const Project: React.FC = () => {
     .catch(error => {
       console.log("(delete task api) error:", error);
     });
-    
   }
+
   if (loading) {
     return <Spin size="large" />;
   }
+  
   const contributors = projectData.users
   console.log("projectData:", projectData);
 
