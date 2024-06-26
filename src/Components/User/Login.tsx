@@ -93,6 +93,7 @@ const Login: React.FC = () => {
         </Button>
       </Form.Item>
     </Form>
+    <span className="text-sm text-black">Not registered yet? <a className='cursor-pointer' onClick={()=>navigate("/register")}>Register Now</a></span>
   </div>
 )};
 

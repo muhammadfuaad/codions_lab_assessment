@@ -122,8 +122,8 @@ const Project: React.FC = () => {
     <div className='bg-gray-100 rounded-xl'>
       <Card title={`${name}`} style={{ width: 600,
         height: "fit-content" }}>
-        <p><span className='font-semibold text-md'>Description: </span>{description}</p>
-        <p className='mt-8'><span className='font-semibold text-md'>Contributors: </span>
+        <p className='text-md'><span className='font-bold'>Description: </span>{description}</p>
+        <p className='mt-8'><span className='font-bold text-md'>Contributors: </span>
           {contributors.length == 0 && "There is no contributor for this project"}
           <Space size={16} wrap>
             {contributors && contributors.map((contributor)=>{

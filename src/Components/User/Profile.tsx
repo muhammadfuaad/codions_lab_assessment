@@ -181,16 +181,18 @@ const Profile: React.FC = () => {
   }
 
   return (
-    <>
-      <h3>Your Details</h3>
+    <div className='bg-gray-100 p-12 rounded-xl'>
+      <h2 className='font-bold text-2xl mb-16'>Dashboard</h2>
       <Table dataSource={dataSource1} columns={columns} rowKey="id" />
-      <Button type="primary" onClick={handleUpdate}>
-        Update Your Details
-      </Button>
-      <Button type="primary" onClick={handleLogOut}>
-        Log Out
-      </Button>
-      <p>There are {assignedProjects.length} projects assigned to you.</p> 
+      <div className="flex gap-4">
+        <Button type="primary" onClick={handleUpdate}>
+          Update Your Details
+        </Button>
+        <Button type="primary" onClick={handleLogOut}>
+          Log Out
+        </Button>
+      </div>
+      <p className='text-md'><span className='font-bold'>Assigned Projects: </span>{assignedProjects.length == 0 ? "No Assigned Project" : assignedProjects.length}</p> 
       {assignedProjects && assignedProjects.map((project)=> 
         {const {name, description} = project
           return ( 
@@ -203,10 +205,12 @@ const Profile: React.FC = () => {
         })
       }
 
-      <Button type="primary" onClick={()=>{navigate("/projects", {state: users})}}>All Projects</Button>
-      <Button type="primary" onClick={()=>{navigate("/users", {state: users})}}>All Users</Button>
+      <div className="flex gap-4">
+        <Button type="primary" onClick={()=>{navigate("/projects", {state: users})}}>All Projects</Button>
+        <Button type="primary" onClick={()=>{navigate("/users", {state: users})}}>All Users</Button>
+      </div>
 
-    </>
+    </div>
   );
 };
 

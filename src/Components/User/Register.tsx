@@ -18,6 +18,8 @@ const Register: React.FC = () => {
   console.log("user:", user);
 
   const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
+    console.log("values:", values);
+    
     (!location.state ? axios.post('https://task-manager.codionslab.com/api/v1/register', values)
       .then(response => {
         console.log('response.data:', response.data);
@@ -68,7 +70,7 @@ const Register: React.FC = () => {
 
   return (
     <div className='bg-gray-100 p-12 rounded-xl'>
-      <h2 className='font-bold text-2xl mb-16'>Login</h2>
+      <h2 className='font-bold text-2xl mb-16'>Register</h2>
       <Form
         name="basic"
         labelCol={{ span: 8 }}
@@ -103,13 +105,13 @@ const Register: React.FC = () => {
           <Input.Password />
         </Form.Item>
 
-        <Form.Item<FieldType>
+        {/* <Form.Item<FieldType>
           name="remember"
           valuePropName="checked"
           wrapperCol={{ offset: 8, span: 16 }}
         >
           <Checkbox>Remember me</Checkbox>
-        </Form.Item>
+        </Form.Item> */}
 
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
           <Button type="primary" htmlType="submit">
@@ -117,7 +119,7 @@ const Register: React.FC = () => {
           </Button>
         </Form.Item>
       </Form>
-
+      <span className="text-sm text-black">Already registered <a className='cursor-pointer' onClick={()=>navigate("/login")}>Login</a></span>
     </div>
   );
 };
