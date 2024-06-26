@@ -1,6 +1,6 @@
 // import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Card, Button, Spin, notification, Space, Avatar, Select } from 'antd';
+import { Card, Button, Spin, notification, Space, Avatar, Select, Tooltip } from 'antd';
 import { useLocation, useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 
@@ -125,11 +125,13 @@ const Project: React.FC = () => {
         <p className='text-md'><span className='font-bold'>Description: </span>{description}</p>
         <p className='mt-8'><span className='font-bold text-md'>Contributors: </span>
           {contributors.length == 0 && "There is no contributor for this project"}
-          <Space size={16} wrap>
+          <Space size={0} wrap>
             {contributors && contributors.map((contributor)=>{
               return ( 
                 <>
-                  <Avatar size={30} gap={2}>{contributor.name}</Avatar>
+                  <Tooltip placement="top" title={contributor.name}>
+                    <Avatar size={30} gap={1}>{contributor.name[0]}</Avatar>
+                  </Tooltip>
                 </>
               )
             })} 
