@@ -8,10 +8,10 @@ const Project: React.FC = () => {
   const [tasks, setTasks] = useState([])
   const [loading, setLoading] = useState<boolean>(true)
   const [isEdit, setIsEdit] = useState<boolean>(false)
-
+  const [comments, setComments] = useState([])
   const users = localStorage.getItem("users")
-  console.log("users:", users);
-  console.log("localStorage:", localStorage);
+  // console.log("users:", users);
+  // console.log("localStorage:", localStorage);
   const navigate = useNavigate()
 
   const {name, description, is_active} = projectData
@@ -50,14 +50,27 @@ const Project: React.FC = () => {
     axios.get(`https://task-manager.codionslab.com/api/v1/project/${projectId}/task`, options)
     .then(response => {
       setTasks(response.data.data)
-      setLoading(false)
+      console.log("response.data.data:", response.data.data);
+      console.log("response.data.data.id:", response.data.data.id);
+      (response.data.data).forEach(task => {
+        const taskId = task.id
+        console.log("taskId:", taskId);
+        axios.get(`https://task-manager.codionslab.com/api/v1/project/${projectId}/task/${taskId}/comment`, options).then(
+          (response)=>{console.log("response:", response);
+            setComments((prevComments)=>[...prevComments, {taskId: taskId, comments: response.data.data}])
+        }).catch((error)=>{console.log("error:", error);
+        })
+      });
     })
     .catch(error => {
-      setLoading(false);
       console.log("error:", error);
     });
     console.log("tasks:", tasks);
   }, [])
+
+  useEffect(()=>{
+    console.log("comments:", comments);
+  }, [comments])
 
   const deleteProject = (id: number) => {
     console.log(`${id} clicked`);
@@ -75,7 +88,6 @@ const Project: React.FC = () => {
         console.log("(delete project api) error:", error);
       });
   }
-
 
   // task actions
   const deleteTask = (taskId: number) => {
@@ -163,6 +175,7 @@ const Project: React.FC = () => {
                 <div><h4 style={{display: "inline"}}>Added at: </h4>{formatDate(created_at)}</div>
                 <div><h4 style={{display: "inline"}}>Updated at: </h4>{formatDate(updated_at)}</div>
                 <div><h4 style={{display: "inline"}}>Due date: </h4>{formatDate(due_date)}</div>
+                <p>Comments: {comments.find((item)=>item.taskId === id).comments.length}</p>
                 <div className='flex items-center justify-center gap-4 mt-8'>
                   <Button type="primary" onClick={() => navigate("/edit_task", {state: {newTask, projectId}})}>
                     Update Task
