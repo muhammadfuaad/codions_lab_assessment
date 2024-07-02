@@ -175,7 +175,14 @@ const Project: React.FC = () => {
                 <div><h4 style={{display: "inline"}}>Added at: </h4>{formatDate(created_at)}</div>
                 <div><h4 style={{display: "inline"}}>Updated at: </h4>{formatDate(updated_at)}</div>
                 <div><h4 style={{display: "inline"}}>Due date: </h4>{formatDate(due_date)}</div>
-                <p>Comments: {comments.find((item)=>item.taskId === id).comments.length}</p>
+                <p>Comments: {comments.find((item)=>item.taskId === id)?.comments.length}</p>
+                {comments.find((item)=>item.taskId === id)?.comments.map((comment)=>{
+                  return ( 
+                    <div>
+                      <span>{comment.content}</span><span className='text-blue-600'>{comment.user_id}</span>
+                    </div>
+                  )
+                  })}
                 <div className='flex items-center justify-center gap-4 mt-8'>
                   <Button type="primary" onClick={() => navigate("/edit_task", {state: {newTask, projectId}})}>
                     Update Task
