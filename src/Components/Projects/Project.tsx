@@ -1,6 +1,5 @@
-// import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Card, Button, Spin, notification, Space, Avatar, Select, Tooltip } from 'antd';
+import { Card, Button, Spin, notification, Space, Avatar, Tooltip } from 'antd';
 import { useLocation, useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 
@@ -9,10 +8,10 @@ const Project: React.FC = () => {
   const [tasks, setTasks] = useState([])
   const [loading, setLoading] = useState<boolean>(true)
   const [isEdit, setIsEdit] = useState<boolean>(false)
-
+  const [comments, setComments] = useState([])
   const users = localStorage.getItem("users")
-  console.log("users:", users);
-  console.log("localStorage:", localStorage);
+  // console.log("users:", users);
+  // console.log("localStorage:", localStorage);
   const navigate = useNavigate()
 
   const {name, description, is_active} = projectData
@@ -51,14 +50,27 @@ const Project: React.FC = () => {
     axios.get(`https://task-manager.codionslab.com/api/v1/project/${projectId}/task`, options)
     .then(response => {
       setTasks(response.data.data)
-      setLoading(false)
+      console.log("response.data.data:", response.data.data);
+      console.log("response.data.data.id:", response.data.data.id);
+      (response.data.data).forEach(task => {
+        const taskId = task.id
+        console.log("taskId:", taskId);
+        axios.get(`https://task-manager.codionslab.com/api/v1/project/${projectId}/task/${taskId}/comment`, options).then(
+          (response)=>{console.log("response:", response);
+            setComments((prevComments)=>[...prevComments, {taskId: taskId, comments: response.data.data}])
+        }).catch((error)=>{console.log("error:", error);
+        })
+      });
     })
     .catch(error => {
-      setLoading(false);
       console.log("error:", error);
     });
     console.log("tasks:", tasks);
   }, [])
+
+  useEffect(()=>{
+    console.log("comments:", comments);
+  }, [comments])
 
   const deleteProject = (id: number) => {
     console.log(`${id} clicked`);
@@ -76,7 +88,6 @@ const Project: React.FC = () => {
         console.log("(delete project api) error:", error);
       });
   }
-
 
   // task actions
   const deleteTask = (taskId: number) => {
@@ -132,7 +143,7 @@ const Project: React.FC = () => {
         height: "fit-content" }}>
         <p className='text-md'><span className='font-bold'>Description: </span>{description}</p>
         <p className='mt-8'><span className='font-bold text-md'>Contributors: </span>
-          {contributors.length == 0 && "There is no contributor for this project"}
+          {contributors && contributors.length == 0 && "There is no contributor for this project"}
           <Space size={0} wrap>
             {contributors && contributors.map((contributor)=>{
               return ( 
@@ -164,6 +175,14 @@ const Project: React.FC = () => {
                 <div><h4 style={{display: "inline"}}>Added at: </h4>{formatDate(created_at)}</div>
                 <div><h4 style={{display: "inline"}}>Updated at: </h4>{formatDate(updated_at)}</div>
                 <div><h4 style={{display: "inline"}}>Due date: </h4>{formatDate(due_date)}</div>
+                <p>Comments: {comments.find((item)=>item.taskId === id)?.comments.length}</p>
+                {comments.find((item)=>item.taskId === id)?.comments.map((comment)=>{
+                  return ( 
+                    <div>
+                      <span>{comment.content}</span><span className='text-blue-600'>{comment.user_id}</span>
+                    </div>
+                  )
+                  })}
                 <div className='flex items-center justify-center gap-4 mt-8'>
                   <Button type="primary" onClick={() => navigate("/edit_task", {state: {newTask, projectId}})}>
                     Update Task
