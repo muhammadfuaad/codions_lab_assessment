@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Card, Button, Spin, notification, Space, Avatar, Tooltip } from 'antd';
+import { Card, Button, Spin, notification, Space, Avatar, Tooltip, Input } from 'antd';
 import { useLocation, useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 
@@ -9,10 +9,14 @@ const Project: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true)
   const [isEdit, setIsEdit] = useState<boolean>(false)
   const [comments, setComments] = useState([])
+  const [content, setContent] = useState("")
   const users = localStorage.getItem("users")
+  const [showInput, setShowInput]  = useState(false)
   // console.log("users:", users);
   // console.log("localStorage:", localStorage);
   const navigate = useNavigate()
+
+  
 
   const {name, description, is_active} = projectData
   const location = useLocation()
@@ -31,6 +35,15 @@ const Project: React.FC = () => {
       Authorization: `Bearer ${savedToken}`,
     },
   };
+
+  const addComment = (id) => {
+    axios.post(`https://task-manager.codionslab.com/api/v1/project/${projectId}/task/${id}/comment`, 
+    {content, parent_id: null}, options)
+    .then((response)=>{console.log("response:", response)})
+    .catch((error)=>{console.log("error:", error);
+    })
+  }
+
   useEffect(()=>{
     if (location && location.state.isUpdate) {
       setIsEdit(true)
@@ -167,15 +180,15 @@ const Project: React.FC = () => {
             updated_at: formatDate(updated_at)}
             return (
               <div className='bg-gray-100 p-12 rounded-xl'>
-                <div><h4 style={{display: "inline"}}>Task Id: </h4>{id}</div>
-                <div><h4 style={{display: "inline"}}>Description: </h4>{description}</div>
-                <div><h4 style={{display: "inline"}}>Added By: </h4>{name}</div>
-                <div><h4 style={{display: "inline"}}>Contributors: </h4>{assignee_id}</div>
-                <div><h4 style={{display: "inline"}}>Status: </h4>{status}</div>
-                <div><h4 style={{display: "inline"}}>Added at: </h4>{formatDate(created_at)}</div>
-                <div><h4 style={{display: "inline"}}>Updated at: </h4>{formatDate(updated_at)}</div>
-                <div><h4 style={{display: "inline"}}>Due date: </h4>{formatDate(due_date)}</div>
-                <p>Comments: {comments.find((item)=>item.taskId === id)?.comments.length}</p>
+                <h4><span className='inline font-bold'>Task Id: </span>{id}</h4>
+                <h4><span className='inline font-bold'>Description: </span>{description}</h4>
+                <h4><span className='inline font-bold'>Added By: </span>{name}</h4>
+                <h4><span className='inline font-bold'>Contributors: </span>{assignee_id}</h4>
+                <h4><span className='inline font-bold'>Status: </span>{status}</h4>
+                <h4><span className='inline font-bold'>Added at: </span>{formatDate(created_at)}</h4>
+                <h4><span className='inline font-bold'>Updated at: </span>{formatDate(updated_at)}</h4>
+                <h4><span className='inline font-bold'>Due date: </span>{formatDate(due_date)}</h4>
+                <h4><span className='inline font-bold'>Comments:</span> {comments.find((item)=>item.taskId === id)?.comments.length}</h4>
                 {comments.find((item)=>item.taskId === id)?.comments.map((comment)=>{
                   return ( 
                     <div>
@@ -183,6 +196,13 @@ const Project: React.FC = () => {
                     </div>
                   )
                   })}
+                <Button type="primary" onClick={()=>{setShowInput(true)}}>Add Comment</Button>
+                {showInput && 
+                  <div>
+                    <Input onChange={(e)=>{setContent(e.target.value)}}></Input> 
+                    <Button onClick={()=>{addComment(id)}}>Post</Button>
+                  </div>
+                }
                 <div className='flex items-center justify-center gap-4 mt-8'>
                   <Button type="primary" onClick={() => navigate("/edit_task", {state: {newTask, projectId}})}>
                     Update Task
