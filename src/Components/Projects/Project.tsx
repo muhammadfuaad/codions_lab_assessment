@@ -12,18 +12,14 @@ const Project: React.FC = () => {
   const [content, setContent] = useState("")
   const users = localStorage.getItem("users")
   const [showInput, setShowInput]  = useState(false)
-  // console.log("users:", users);
-  // console.log("localStorage:", localStorage);
   const navigate = useNavigate()
-
-  
 
   const {name, description, is_active} = project
   const location = useLocation()
   const id = location.state.id
   const projectId = location.state.id
 
-  const savedToken = location.state.savedToken
+  const token = location.state.token
   
   console.log("isEdit:", isEdit);
   console.log("location.state.isUpdate:", location.state.isUpdate);
@@ -32,7 +28,7 @@ const Project: React.FC = () => {
   const options = {
     headers: {
       Accept: 'application/json',
-      Authorization: `Bearer ${savedToken}`,
+      Authorization: `Bearer ${token}`,
     },
   };
 
@@ -167,7 +163,7 @@ const Project: React.FC = () => {
   
   return (
     <div className='bg-gray-100 rounded-xl'>
-      <Card title={`${name}`} style={{ width: 600,
+      <Card title={`${id}) ${name}`} style={{ width: 600,
         height: "fit-content" }}>
         <p className='text-md'><span className='font-bold'>Description: </span>{description}</p>
         <p className='mt-8'><span className='font-bold text-md'>Contributors: </span>
@@ -184,14 +180,14 @@ const Project: React.FC = () => {
             })} 
           </Space>
         </p>
-        <h3 className='font-semibold text-md mt-12'>Tasks: {tasks.length ==0 && <span className='font-normal'>No task is
-          added to this prject</span>}</h3>
+        <h3 className='font-bold text-lg mt-6'>Tasks: <span className='font-normal'>{tasks.length == 0 ? "No task is added to this project" : tasks.length}</span></h3>
         <Button type="primary" onClick={() => navigate("/new_task", {state: projectId})}>
             New Task
           </Button>
         <div className='flex flex-col gap-4'>
           {tasks.map((task)=>{
             const {id, name, description, due_date, assignee_id, status, created_at, updated_at } = task
+            console.log("task:", task)
             const taskId = id
             const newTask = {...task, due_date: formatDate(due_date), created_at: formatDate(created_at),
             updated_at: formatDate(updated_at)}
@@ -205,10 +201,10 @@ const Project: React.FC = () => {
                 <h4><span className='inline font-bold'>Added at: </span>{formatDate(created_at)}</h4>
                 <h4><span className='inline font-bold'>Updated at: </span>{formatDate(updated_at)}</h4>
                 <h4><span className='inline font-bold'>Due date: </span>{formatDate(due_date)}</h4>
-                <h4>
-                  <span className='inline font-bold'>Comments:</span> 
+                <h3>
+                  <span className='inline font-bold text-blue-600'>Comments: </span> 
                   {comments.find((item)=>item.taskId === id)?.comments.length}
-                </h4>
+                </h3>
                 {comments.find((item)=>item.taskId === id)?.comments.map((comment)=>{
                   const {content, id} = comment
                   return ( 
@@ -218,7 +214,7 @@ const Project: React.FC = () => {
                     </div>
                   )
                   })}
-                <Button type="primary" onClick={()=>{setShowInput(true)}}>Add Comment</Button>
+                <Button type="primary" onClick={()=>{setShowInput(true)}}>New Comment</Button>
                 {showInput && 
                   <div>
                     <Input onChange={(e)=>{setContent(e.target.value)}}></Input> 
@@ -226,24 +222,25 @@ const Project: React.FC = () => {
                   </div>
                 }
                 <div className='flex items-center justify-center gap-4 mt-8'>
-                  <Button type="primary" onClick={() => navigate("/edit_task", {state: {newTask, projectId}})}>
+                  <button className="bg-blue-500 text-white" onClick={() => navigate("/edit_task", 
+                    {state: {newTask, projectId}})}>
                     Update Task
-                  </Button>
-                  <Button type="primary" onClick={() => deleteTask(id)}>
+                  </button>
+                  <button className='bg-red-600 text-white' onClick={() => deleteTask(id)}>
                     Delete Task
-                  </Button>
+                  </button>
                 </div>
               </div>
             )
           })}
         </div>
         <div className='flex gap-4 my-12 justify-center items-center'>
-          <Button type="primary" onClick={() => navigate("/edit_project", {state: project})}>
+          <button className="bg-blue-500 text-white" onClick={() => navigate("/edit_project", {state: project})}>
             Update Project
-          </Button>
-          <Button type="primary" onClick={() => deleteProject(id)}>
+          </button>
+          <button className='bg-red-600 text-white' onClick={() => deleteProject(id)}>
             Delete Project
-          </Button>
+          </button>
         </div>
       </Card>
     </div>
