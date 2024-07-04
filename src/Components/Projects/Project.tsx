@@ -12,11 +12,7 @@ const Project: React.FC = () => {
   const [content, setContent] = useState("")
   const users = localStorage.getItem("users")
   const [showInput, setShowInput]  = useState(false)
-  // console.log("users:", users);
-  // console.log("localStorage:", localStorage);
   const navigate = useNavigate()
-
-  
 
   const {name, description, is_active} = project
   const location = useLocation()
@@ -191,6 +187,7 @@ const Project: React.FC = () => {
         <div className='flex flex-col gap-4'>
           {tasks.map((task)=>{
             const {id, name, description, due_date, assignee_id, status, created_at, updated_at } = task
+            console.log("task:", task)
             const taskId = id
             const newTask = {...task, due_date: formatDate(due_date), created_at: formatDate(created_at),
             updated_at: formatDate(updated_at)}
