@@ -36,11 +36,26 @@ const Project: React.FC = () => {
     },
   };
 
+  // comment actions
   const addComment = (id) => {
     axios.post(`https://task-manager.codionslab.com/api/v1/project/${projectId}/task/${id}/comment`, 
     {content, parent_id: null}, options)
     .then((response)=>{console.log("response:", response)})
     .catch((error)=>{console.log("error:", error);
+    })
+  }
+
+  const deleteComment = (id, taskId) => {
+    console.log("id:", id);
+    console.log("taskId:", taskId);
+    axios.delete(`https://task-manager.codionslab.com/api/v1/project/${projectId}/task/${taskId}/comment/${id}`, options)
+    .then((response)=>{
+      console.log(response);
+      const newComments = comments.filter((comment)=>comment.id === id)
+      console.log("newComments:", newComments);
+      
+      setComments(newComments)
+    }).catch((error)=>{console.log(error);
     })
   }
 
@@ -169,13 +184,15 @@ const Project: React.FC = () => {
             })} 
           </Space>
         </p>
-        <h3 className='font-semibold text-md mt-12'>Tasks: {tasks.length ==0 && <span className='font-normal'>No task is added to this prject</span>}</h3>
+        <h3 className='font-semibold text-md mt-12'>Tasks: {tasks.length ==0 && <span className='font-normal'>No task is
+          added to this prject</span>}</h3>
         <Button type="primary" onClick={() => navigate("/new_task", {state: projectId})}>
             New Task
           </Button>
         <div className='flex flex-col gap-4'>
           {tasks.map((task)=>{
             const {id, name, description, due_date, assignee_id, status, created_at, updated_at } = task
+            const taskId = id
             const newTask = {...task, due_date: formatDate(due_date), created_at: formatDate(created_at),
             updated_at: formatDate(updated_at)}
             return (
@@ -188,11 +205,16 @@ const Project: React.FC = () => {
                 <h4><span className='inline font-bold'>Added at: </span>{formatDate(created_at)}</h4>
                 <h4><span className='inline font-bold'>Updated at: </span>{formatDate(updated_at)}</h4>
                 <h4><span className='inline font-bold'>Due date: </span>{formatDate(due_date)}</h4>
-                <h4><span className='inline font-bold'>Comments:</span> {comments.find((item)=>item.taskId === id)?.comments.length}</h4>
+                <h4>
+                  <span className='inline font-bold'>Comments:</span> 
+                  {comments.find((item)=>item.taskId === id)?.comments.length}
+                </h4>
                 {comments.find((item)=>item.taskId === id)?.comments.map((comment)=>{
+                  const {content, id} = comment
                   return ( 
-                    <div>
-                      <span>{comment.content}</span><span className='text-blue-600'>{comment.user_id}</span>
+                    <div className='flex gap-2'>
+                      <span>{content}</span><span className='text-blue-600'>{comment.user_id}</span>
+                      <span className='text-red-600 cursor-pointer' onClick={()=>{deleteComment(id, taskId)}}>Delete</span>
                     </div>
                   )
                   })}
