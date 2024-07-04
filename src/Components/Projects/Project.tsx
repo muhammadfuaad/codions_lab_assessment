@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Card, Button, Spin, notification, Space, Avatar, Tooltip } from 'antd';
+import { Card, Button, Spin, notification, Space, Avatar, Tooltip, Input } from 'antd';
 import { useLocation, useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 
@@ -9,10 +9,14 @@ const Project: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true)
   const [isEdit, setIsEdit] = useState<boolean>(false)
   const [comments, setComments] = useState([])
+  const [content, setContent] = useState("")
   const users = localStorage.getItem("users")
+  const [showInput, setShowInput]  = useState(false)
   // console.log("users:", users);
   // console.log("localStorage:", localStorage);
   const navigate = useNavigate()
+
+  
 
   const {name, description, is_active} = projectData
   const location = useLocation()
@@ -31,6 +35,15 @@ const Project: React.FC = () => {
       Authorization: `Bearer ${savedToken}`,
     },
   };
+
+  const addComment = (id) => {
+    axios.post(`https://task-manager.codionslab.com/api/v1/project/${projectId}/task/${id}/comment`, 
+    {content, parent_id: null}, options)
+    .then((response)=>{console.log("response:", response)})
+    .catch((error)=>{console.log("error:", error);
+    })
+  }
+
   useEffect(()=>{
     if (location && location.state.isUpdate) {
       setIsEdit(true)
@@ -183,6 +196,13 @@ const Project: React.FC = () => {
                     </div>
                   )
                   })}
+                <Button type="primary" onClick={()=>{setShowInput(true)}}>Add Comment</Button>
+                {showInput && 
+                  <div>
+                    <Input onChange={(e)=>{setContent(e.target.value)}}></Input> 
+                    <Button onClick={()=>{addComment(id)}}>Post</Button>
+                  </div>
+                }
                 <div className='flex items-center justify-center gap-4 mt-8'>
                   <Button type="primary" onClick={() => navigate("/edit_task", {state: {newTask, projectId}})}>
                     Update Task
