@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 
 const Project: React.FC = () => {
-  const [projectData, setProjectData] = useState({})
+  const [project, setProject] = useState({})
   const [tasks, setTasks] = useState([])
   const [loading, setLoading] = useState<boolean>(true)
   const [isEdit, setIsEdit] = useState<boolean>(false)
@@ -18,7 +18,7 @@ const Project: React.FC = () => {
 
   
 
-  const {name, description, is_active} = projectData
+  const {name, description, is_active} = project
   const location = useLocation()
   const id = location.state.id
   const projectId = location.state.id
@@ -65,7 +65,7 @@ const Project: React.FC = () => {
     }
     axios.get(`https://task-manager.codionslab.com/api/v1/project/${projectId}`, options)
     .then(response => {
-      setProjectData(response.data.data)
+      setProject(response.data.data)
       setLoading(false)
       console.log("response.data.data:", response.data.data);
       
@@ -142,8 +142,8 @@ const Project: React.FC = () => {
     return <Spin size="large" />;
   }
   
-  const contributors = projectData.users
-  console.log("projectData:", projectData);
+  const contributors = project.users
+  console.log("project:", project);
 
   console.log("contributors:", contributors);
   
@@ -238,7 +238,7 @@ const Project: React.FC = () => {
           })}
         </div>
         <div className='flex gap-4 my-12 justify-center items-center'>
-          <Button type="primary" onClick={() => navigate("/edit_project", {state: projectData})}>
+          <Button type="primary" onClick={() => navigate("/edit_project", {state: project})}>
             Update Project
           </Button>
           <Button type="primary" onClick={() => deleteProject(id)}>
