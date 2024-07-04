@@ -15,14 +15,14 @@ const Projects: React.FC = () => {
   const [totalProjects, setTotalProjects] = useState([])
   const [loading, setLoading] = useState(true)
 
-  const savedToken = localStorage.getItem("token");
-  console.log('savedToken:', savedToken);
+  const token = localStorage.getItem("token");
+  console.log('token:', token);
   // console.log('localStorage:', localStorage);
 
   const options = {
     headers: {
       Accept: 'application/json',
-      Authorization: `Bearer ${savedToken}`,
+      Authorization: `Bearer ${token}`,
     },
   };
   
@@ -74,7 +74,7 @@ const Projects: React.FC = () => {
       </div>
       {totalProjects && totalProjects.map((project)=>{
         const showProject = (id: number) => {
-          navigate("/project", {state: {id, savedToken}} )
+          navigate("/project", {state: {id, token}} )
         }
         const {id, name, description} = project
         const contributors = project.users

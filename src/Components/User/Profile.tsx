@@ -16,12 +16,12 @@ interface UserData {
 const Profile: React.FC = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const savedToken = localStorage.getItem("token");
-  console.log('savedToken:', savedToken);
+  const token = localStorage.getItem("token");
+  console.log('token:', token);
   const options = {
     headers: {
       Accept: 'application/json',
-      Authorization: `Bearer ${savedToken}`,
+      Authorization: `Bearer ${token}`,
     },
   };
 
@@ -51,7 +51,7 @@ const Profile: React.FC = () => {
   const updateProject = (id: number) => {
     console.log(`${id} clicked`);
     const isUpdate = true
-    navigate("/project", {state: {id, savedToken, isUpdate}} )
+    navigate("/project", {state: {id, token, isUpdate}} )
   }
 
     // user actions
@@ -71,7 +71,7 @@ const Profile: React.FC = () => {
     const user = users.find((user)=> user.id === id)
     const isUserEdit = true
     navigate("/edit_user", { state: {id: user.id, name: user.name, email: user.email, password: user.password, role: user.role,
-      is_active: user.is_active, token: savedToken, options, isUserEdit} });
+      is_active: user.is_active, token: token, options, isUserEdit} });
   }
 
   const handleUpdate = () => {

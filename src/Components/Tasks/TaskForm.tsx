@@ -6,12 +6,12 @@ import type { FormProps } from 'antd';
 import { useLocation } from 'react-router';
 
 const TaskForm: React.FC = () => {
-  const savedToken = localStorage.getItem("token");
-  console.log('savedToken:', savedToken);
+  const token = localStorage.getItem("token");
+  console.log('token:', token);
   const options = {
     headers: {
       Accept: 'application/json',
-      Authorization: `Bearer ${savedToken}`,
+      Authorization: `Bearer ${token}`,
     },
   };
 
