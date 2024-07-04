@@ -32,33 +32,12 @@ const Project: React.FC = () => {
     },
   };
 
-  // comment actions
-  const addComment = (id) => {
-    axios.post(`https://task-manager.codionslab.com/api/v1/project/${projectId}/task/${id}/comment`, 
-    {content, parent_id: null}, options)
-    .then((response)=>{console.log("response:", response)})
-    .catch((error)=>{console.log("error:", error);
-    })
-  }
-
-  const deleteComment = (id, taskId) => {
-    console.log("id:", id);
-    console.log("taskId:", taskId);
-    axios.delete(`https://task-manager.codionslab.com/api/v1/project/${projectId}/task/${taskId}/comment/${id}`, options)
-    .then((response)=>{
-      console.log(response);
-      const newComments = comments.filter((comment)=>comment.id === id)
-      console.log("newComments:", newComments);
-      
-      setComments(newComments)
-    }).catch((error)=>{console.log(error);
-    })
-  }
-
+  // project actions
   useEffect(()=>{
     if (location && location.state.isUpdate) {
       setIsEdit(true)
     }
+    // it fetches all projects
     axios.get(`https://task-manager.codionslab.com/api/v1/project/${projectId}`, options)
     .then(response => {
       setProject(response.data.data)
@@ -71,6 +50,7 @@ const Project: React.FC = () => {
       console.log("error:", error);
     });
 
+    // it fetches all tasks
     axios.get(`https://task-manager.codionslab.com/api/v1/project/${projectId}/task`, options)
     .then(response => {
       setTasks(response.data.data)
@@ -79,6 +59,7 @@ const Project: React.FC = () => {
       (response.data.data).forEach(task => {
         const taskId = task.id
         console.log("taskId:", taskId);
+      // it fetches all comments
         axios.get(`https://task-manager.codionslab.com/api/v1/project/${projectId}/task/${taskId}/comment`, options).then(
           (response)=>{console.log("response:", response);
             setComments((prevComments)=>[...prevComments, {taskId: taskId, comments: response.data.data}])
@@ -91,10 +72,6 @@ const Project: React.FC = () => {
     });
     console.log("tasks:", tasks);
   }, [])
-
-  useEffect(()=>{
-    console.log("comments:", comments);
-  }, [comments])
 
   const deleteProject = (id: number) => {
     console.log(`${id} clicked`);
@@ -133,6 +110,33 @@ const Project: React.FC = () => {
       console.log("(delete task api) error:", error);
     });
   }
+
+  // comment actions
+  const addComment = (id) => {
+    axios.post(`https://task-manager.codionslab.com/api/v1/project/${projectId}/task/${id}/comment`, 
+    {content, parent_id: null}, options)
+    .then((response)=>{console.log("response:", response)})
+    .catch((error)=>{console.log("error:", error);
+    })
+  }
+
+  const deleteComment = (id, taskId) => {
+    console.log("id:", id);
+    console.log("taskId:", taskId);
+    axios.delete(`https://task-manager.codionslab.com/api/v1/project/${projectId}/task/${taskId}/comment/${id}`, options)
+    .then((response)=>{
+      console.log(response);
+      const newComments = comments.filter((comment)=>comment.id === id)
+      console.log("newComments:", newComments);
+      
+      setComments(newComments)
+    }).catch((error)=>{console.log(error);
+    })
+  }
+
+  useEffect(()=>{
+    console.log("comments:", comments);
+  }, [comments])
 
   if (loading) {
     return <Spin size="large" />;
@@ -181,9 +185,9 @@ const Project: React.FC = () => {
           </Space>
         </p>
         <h3 className='font-bold text-lg mt-6'>Tasks: <span className='font-normal'>{tasks.length == 0 ? "No task is added to this project" : tasks.length}</span></h3>
-        <Button type="primary" onClick={() => navigate("/new_task", {state: projectId})}>
+          <button className="bg-blue-500 text-white" onClick={() => navigate("/new_task", {state: projectId})}>
             New Task
-          </Button>
+          </button>
         <div className='flex flex-col gap-4'>
           {tasks.map((task)=>{
             const {id, name, description, due_date, assignee_id, status, created_at, updated_at } = task
@@ -214,7 +218,7 @@ const Project: React.FC = () => {
                     </div>
                   )
                   })}
-                <Button type="primary" onClick={()=>{setShowInput(true)}}>New Comment</Button>
+                <button className="bg-blue-500 text-white" onClick={()=>{setShowInput(true)}}>New Comment</button>
                 {showInput && 
                   <div>
                     <Input onChange={(e)=>{setContent(e.target.value)}}></Input> 
