@@ -1,7 +1,7 @@
 // import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { Button, Space, Card, Avatar, Select, Spin, notification, Tooltip } from 'antd';
+import { Space, Card, Avatar, Spin, notification, Tooltip } from 'antd';
 import { useLocation } from 'react-router';
 import { useNavigate } from 'react-router';
 
@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router';
 const Projects: React.FC = () => {
   const location = useLocation()
   const navigate = useNavigate()
-  const users = location.state
+  // const users = location.state
   console.log('location.state:', location.state);
 
   const [totalProjects, setTotalProjects] = useState([])
@@ -26,6 +26,7 @@ const Projects: React.FC = () => {
     },
   };
   
+  // project actions
   useEffect(()=>{
     axios.get("https://task-manager.codionslab.com/api/v1/admin/project" , options).then(response => {
       // setLoading(false);
@@ -68,9 +69,9 @@ const Projects: React.FC = () => {
     <>
       <h3>Listed projects: {totalProjects && totalProjects.length}</h3>
       <div>
-        <Button type="primary" onClick={() => navigate("/new_project")}>
+        <button className="bg-blue-500 text-white" onClick={() => navigate("/new_project")}>
           New Project
-        </Button>
+        </button>
       </div>
       {totalProjects && totalProjects.map((project)=>{
         const showProject = (id: number) => {
@@ -78,9 +79,6 @@ const Projects: React.FC = () => {
         }
         const {id, name, description} = project
         const contributors = project.users
-        const handleChange = (value) => {
-          console.log(`Selected: ${value}`);
-        }
         // const nonContributors = users.filter(user => !contributors.some(contributor => contributor.id === user.id));
         // console.log("nonContributors:", (nonContributors));
         
@@ -95,24 +93,21 @@ const Projects: React.FC = () => {
                     <Space size={0} wrap>
                       {contributors.map((contributor)=>{
                         return (
-                          <>
                           <Tooltip placement="top" title={contributor.name}>
                             <Avatar size={30} gap={1}>{contributor.name[0]}</Avatar>
-          
                           </Tooltip>
-                          </>
                         )
                       })}
                     </Space>
                   </p>
                 }
                 <div className='flex items-center justify-center gap-4 mt-8'>
-                  <Button type="primary" onClick={() => navigate("/edit_project", {state: project})}>
+                  <button className="bg-blue-500 text-white" onClick={() => navigate("/edit_project", {state: project})}>
                     Update
-                  </Button>
-                  <Button type="primary" onClick={() => deleteProject(id)}>
+                  </button>
+                  <button className='bg-red-600 text-white' onClick={() => deleteProject(id)}>
                     Delete
-                  </Button>
+                  </button>
                 </div>
               </Card>
             </div>
